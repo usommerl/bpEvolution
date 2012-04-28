@@ -2,6 +2,8 @@ class Item(val id: String, val size: Double) extends Ordered[Item]{
 
     override def toString = "[Item id="+id+", size="+size+"]"
 
+    def compare(that: Item) = this.size.compare(that.size)
+    
     override def hashCode = this.id.hashCode
     
     override def equals(other: Any) = other match {
@@ -10,7 +12,4 @@ class Item(val id: String, val size: Double) extends Ordered[Item]{
     }
     
     def canEqual(other: Any): Boolean = other.isInstanceOf[Item]
-
-    def compare(that: Item) = this.size.compare(that.size)
-
 }

@@ -1,13 +1,12 @@
-import Individual._
+import scala.math.pow
 
-class Individual(val bins: Set[Bin]) {
+class Individual(val genotype: List[Item], val decoder: GenotypeDecoder) extends Ordered[Individual]{
 
-    def quality(f: Individual => Double = QualityFuncCapacity): Double = f(this)
-
-    override def toString() = "[Individual numberOfBins="+bins.size+" quality="+this.quality()+"]"
+  lazy val quality = this.phenotype.size
+  lazy val phenotype: List[Bin] = this.decoder.decode(genotype)
+  private val timeOfBirth = System.currentTimeMillis
+  def age = System.currentTimeMillis - timeOfBirth
+  def compare(that: Individual) = this.quality.compare(that.quality)
+  override def toString() = "[Individual quality="+quality+" age="+this.age+"]"
 }
 
-object Individual {
-   val QualityFuncBins = (x:Individual) => -x.bins.size.toDouble
-   val QualityFuncCapacity = (x:Individual) => -x.bins.foldLeft(0.0){_+_.remainingCapacity}
-}

@@ -4,6 +4,7 @@ class BinPackProblem(val id: String, val binCapacity: Double, val bestKnownSolut
     require(items.size > 0)
     require(bestKnownSolution > 0)
     
+    lazy val size = this.items.size
     override def toString() = {
       "[BinPackProblem id="+id+" binCapacity="+binCapacity+" bestKnownSolution="+bestKnownSolution+"]" 
     }
