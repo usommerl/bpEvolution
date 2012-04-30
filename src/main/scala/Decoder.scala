@@ -7,18 +7,17 @@ abstract class GenotypeDecoder(problem: BinPackProblem){
   def decode(genotype: List[Item]): List[Bin]
 
   @elidable(ASSERTION)
-  protected def evaluatePhenotype(phenotype: List[Bin], problem: BinPackProblem){
-    val itemsInBins = (0 /: phenotype)(_+_.items.toSet.size);
-    assert(itemsInBins == problem.size, "Phenotype is not valid (itemsInBins="+itemsInBins+", problem.size="+problem.size+")")
-    val itemBuffer = new ListBuffer[Item]
-    phenotype.foreach(itemBuffer ++= _.items)
+  protected def assertPhenotypeIsValid(phenotype: List[Bin], problem: BinPackProblem){
+    val numberOfItems = phenotype.flatMap(_.items).size;
+    assert(numberOfItems == problem.size, "Phenotype is not valid (numberOfItems="+numberOfItems+", problem.size="+problem.size+")")
+    val itemsInBins = phenotype.flatMap(_.items) 
     for (item <- problem.items) 
-      if (!itemBuffer.contains(item)) throw new java.lang.AssertionError("Phenotype is not valid")
+      if (!itemsInBins.contains(item)) throw new java.lang.AssertionError(item+" in Problem but not in phenotype")
     }
 
 }
 
-class SimpleDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
+case class SimpleDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
 
   def decode(genotype: List[Item]): List[Bin] = {
     val binBuffer = new ListBuffer[Bin]
@@ -33,7 +32,7 @@ class SimpleDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
       itemBuffer += item
     }
     binBuffer += new Bin(this.problem.binCapacity, itemBuffer.toList)
-    evaluatePhenotype(binBuffer.toList, this.problem)
+    assertPhenotypeIsValid(binBuffer.toList, this.problem)
     binBuffer.toList
   }
 }

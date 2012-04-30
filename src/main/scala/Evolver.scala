@@ -2,22 +2,28 @@ import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
 class Evolver(val problem: BinPackProblem){
-  
+
   val initialPopulationSize = 1000
-  val genotypeDecoder = new SimpleDecoder(problem)
-  val selection = SimpleSelection
+  val genotypeDecoder = SimpleDecoder(problem)
+  val parentSelection = BestSelection
+  val environmentSelection = TournamentSelection()
   val recombination = OrderedRecombination
   var population = initializePopulation(initialPopulationSize, problem)
 
   def run() {
     println(problem)
-    for (i <- 1 to 20) { 
-      printShit()
-      val parents = selection.select(population)
+    var i = 0
+    var abortCounter = 0
+    while (abortCounter < 5) { 
+      println(population)
+      if (population.best == population.worst) abortCounter += 1 else abortCounter = 0 
+      val parents = parentSelection.select(population.individuals, population.individuals.size/2)
       val children = bearChildren(parents)
-      this.population = new Population(i, (parents ++: children))
+      val nextGeneration = environmentSelection.select(parents ++: children, population.size)  
+      this.population = new Population(i, nextGeneration)
+      i += 1
     }
-    
+
   }
 
   private def initializePopulation(size: Int, problem: BinPackProblem): Population = {
@@ -26,27 +32,21 @@ class Evolver(val problem: BinPackProblem){
     val individualBuffer = new ListBuffer[Individual]
     for (i <- 1 to size) {
       val shuffledItems = Random.shuffle(problem.items)
-      val individual = new Individual(shuffledItems, this.genotypeDecoder)
-      individualBuffer += individual
+        val individual = new Individual(shuffledItems, this.genotypeDecoder)
+        individualBuffer += individual
     }
     new Population(0, individualBuffer.toList)
   }
 
-  private def bearChildren(parents: List[Individual]): List[Individual] = {
+  private def bearChildren(parents: List[Individual], reproductionFactor: Int = 1): List[Individual] = {
     val children = new ListBuffer[Individual]
-    val coupleIterator = (parents :+ parents.head).sliding(2)
-    while(coupleIterator.hasNext){
-      val couple = coupleIterator.next
-      couple match { 
+    (1 to reproductionFactor).foreach{ i =>
+      val shuffledParents = Random.shuffle(parents)
+      (shuffledParents :+ shuffledParents.head).sliding(2).foreach{ 
         case parentA::parentB::Nil => children += this.recombination.recombine(parentA, parentB)
-        case _ => throw new Exception("Sorry, this won't work")
+        case _ =>
       }
     }
     children.toList
-  }
-
-  private def printShit() {
-    println(population)
-    //population.individuals.sorted.reverse.foreach(println)
   }
 }
