@@ -3,27 +3,26 @@ import scala.util.Random
 
 class Evolver(val problem: BinPackProblem){
 
-  val initialPopulationSize = 1000
+  val initialPopulationSize = 500
+  val maxRuns = 200
   val genotypeDecoder = SimpleDecoder(problem)
   val parentSelection = BestSelection
   val environmentSelection = TournamentSelection()
   val recombination = OrderedRecombination
+  val mutations: List[Mutation] = List(InversionMutation, ShiftingMutation)
   var population = initializePopulation(initialPopulationSize, problem)
 
   def run() {
     println(problem)
     var i = 0
-    var abortCounter = 0
-    while (abortCounter < 5) { 
+    while (population.best.quality > problem.bestKnownSolution && i <= maxRuns) { 
       println(population)
-      if (population.best == population.worst) abortCounter += 1 else abortCounter = 0 
-      val parents = parentSelection.select(population.individuals, population.individuals.size/2)
-      val children = bearChildren(parents)
+      i += 1
+      val parents = parentSelection.select(population.individuals, population.individuals.size/4)
+      val children = mutateIndividuals(bearChildren(parents, 4))
       val nextGeneration = environmentSelection.select(parents ++: children, population.size)  
       this.population = new Population(i, nextGeneration)
-      i += 1
     }
-
   }
 
   private def initializePopulation(size: Int, problem: BinPackProblem): Population = {
@@ -39,8 +38,9 @@ class Evolver(val problem: BinPackProblem){
   }
 
   private def bearChildren(parents: List[Individual], reproductionFactor: Int = 1): List[Individual] = {
+    require(parents.size > 1, "Need at least two parents to bear children")
     val children = new ListBuffer[Individual]
-    (1 to reproductionFactor).foreach{ i =>
+    for (_ <- 1 to reproductionFactor) { 
       val shuffledParents = Random.shuffle(parents)
       (shuffledParents :+ shuffledParents.head).sliding(2).foreach{ 
         case parentA::parentB::Nil => children += this.recombination.recombine(parentA, parentB)
@@ -48,5 +48,17 @@ class Evolver(val problem: BinPackProblem){
       }
     }
     children.toList
+  }
+
+  private def mutateIndividuals(individuals: List[Individual]): List[Individual] = {
+    val mutantBuffer = new ListBuffer[Individual]
+    def applyMutations(individual: Individual, mutations: List[Mutation]): Individual = {
+      mutations match { 
+        case Nil        => individual
+        case head::tail => head.mutate(applyMutations(individual, tail))
+      }
+    }
+    for (individual <- individuals) mutantBuffer += applyMutations(individual, this.mutations)
+    mutantBuffer.toList
   }
 }

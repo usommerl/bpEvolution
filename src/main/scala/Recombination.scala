@@ -5,7 +5,6 @@ trait Recombination {
 }
 
 object OrderedRecombination extends Recombination {
-
   def recombine(parentA: Individual, parentB: Individual): Individual = {
     assert(parentA.decoder == parentB.decoder, "Genotype decoders have to be equal")
     val randomLength = Random.nextInt(parentA.genotype.length + 1)
