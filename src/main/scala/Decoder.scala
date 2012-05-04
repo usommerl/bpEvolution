@@ -1,6 +1,7 @@
 import scala.collection.mutable.ListBuffer
 import scala.annotation.elidable
 import scala.annotation.elidable.ASSERTION
+import java.lang.AssertionError
 
 abstract class GenotypeDecoder(problem: BinPackProblem){
 
@@ -12,7 +13,7 @@ abstract class GenotypeDecoder(problem: BinPackProblem){
     assert(numberOfItems == problem.size, "Phenotype is not valid (numberOfItems="+numberOfItems+", problem.size="+problem.size+")")
     val itemsInBins = phenotype.flatMap(_.items) 
     for (item <- problem.items) 
-      if (!itemsInBins.contains(item)) throw new java.lang.AssertionError(item+" in Problem but not in phenotype")
+      if (!itemsInBins.contains(item)) throw new AssertionError(item+" in Problem but not in phenotype")
     }
 
 }

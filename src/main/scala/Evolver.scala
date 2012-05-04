@@ -1,31 +1,27 @@
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-class Evolver(val problem: BinPackProblem){
+abstract class Evolver(configuration: EvolverConfiguration){
 
-  val initialPopulationSize = 500
-  val maxRuns = 200
-  val genotypeDecoder = SimpleDecoder(problem)
-  val parentSelection = BestSelection
-  val environmentSelection = TournamentSelection()
-  val recombination = OrderedRecombination
-  val mutations: List[Mutation] = List(InversionMutation, ShiftingMutation)
-  var population = initializePopulation(initialPopulationSize, problem)
+  protected val problem = configuration.problem
+  protected val initialPopulationSize = configuration.populationSize
+  protected val maxGenerations = configuration.maxGenerations
+  protected val genotypeDecoder = configuration.genotypeDecoder
+  protected val parentSelection = configuration.parentSelection
+  protected val recombination = configuration.recombination
+  protected val mutations = configuration.mutations
+  protected val environmentSelection = configuration.environmentSelection
+  private var population = initializePopulation(initialPopulationSize, problem)
 
   def run() {
-    println(problem)
-    var i = 0
-    while (population.best.quality > problem.bestKnownSolution && i <= maxRuns) { 
-      println(population)
-      i += 1
-      val parents = parentSelection.select(population.individuals, population.individuals.size/4)
-      val children = mutateIndividuals(bearChildren(parents, 4))
-      val nextGeneration = environmentSelection.select(parents ++: children, population.size)  
-      this.population = new Population(i, nextGeneration)
+    while (population.best.quality > problem.bestKnownSolution && population.generation <= maxGenerations) { 
+       population = evolve(population)
     }
   }
 
-  private def initializePopulation(size: Int, problem: BinPackProblem): Population = {
+  def evolve(population: Population): Population
+
+  protected def initializePopulation(size: Int, problem: BinPackProblem): Population = {
     require(problem != null)
     require(size > 1, "A Population should consist of at least 2 individuals")
     val individualBuffer = new ListBuffer[Individual]
@@ -37,10 +33,14 @@ class Evolver(val problem: BinPackProblem){
     new Population(0, individualBuffer.toList)
   }
 
-  private def bearChildren(parents: List[Individual], reproductionFactor: Int = 1): List[Individual] = {
+  protected def bearAndMutateChildren(parents: List[Individual], spawnRate: Int = 1): List[Individual] = {
+    mutateIndividuals(bearChildren(parents, spawnRate))
+  }
+
+  protected def bearChildren(parents: List[Individual], spawnRate: Int = 1): List[Individual] = {
     require(parents.size > 1, "Need at least two parents to bear children")
     val children = new ListBuffer[Individual]
-    for (_ <- 1 to reproductionFactor) { 
+    for (_ <- 1 to spawnRate) { 
       val shuffledParents = Random.shuffle(parents)
       (shuffledParents :+ shuffledParents.head).sliding(2).foreach{ 
         case parentA::parentB::Nil => children += this.recombination.recombine(parentA, parentB)
@@ -50,7 +50,7 @@ class Evolver(val problem: BinPackProblem){
     children.toList
   }
 
-  private def mutateIndividuals(individuals: List[Individual]): List[Individual] = {
+  protected def mutateIndividuals(individuals: List[Individual]): List[Individual] = {
     val mutantBuffer = new ListBuffer[Individual]
     def applyMutations(individual: Individual, mutations: List[Mutation]): Individual = {
       mutations match { 
@@ -62,3 +62,16 @@ class Evolver(val problem: BinPackProblem){
     mutantBuffer.toList
   }
 }
+
+/*
+ *case class EvolverConfiguration(
+ *  val problem: BinPackProblem, 
+ *  var populationSize: Int = 200, 
+ *  var iterations: Int = 200, 
+ *  var parentSelection: Selection = BestSelection, 
+ *  var recombination: Recombination = OrderedRecombination, 
+ *  var mutations: List[Mutation] = List(InversionMutation, ShiftingMutation), 
+ *  var environmentSelection: Selection = TournamentSelection() ) {
+ *  val genotypeDecoder = new SimpleDecoder(problem)
+ *}
+ */

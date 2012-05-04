@@ -4,17 +4,17 @@ import scala.collection.mutable.ListBuffer
 
 object Utils {
 
-  lazy val beasleyProblemInstances = loadBeasleyProblemInstances()
+  lazy val problemInstances = loadProblemInstances()
 
-  private def loadBeasleyProblemInstances(): Map[String, BinPackProblem] = {
+  private def loadProblemInstances(): Map[String, BinPackProblem] = {
     val resourceDirectory = new File(getClass.getResource(".").toURI())
       val filenamesProblems = resourceDirectory.list().filter(_.matches("binpack\\d*\\.txt"))
       val problemBuffer = new ListBuffer[BinPackProblem]
-    filenamesProblems.foreach(name => problemBuffer ++= readBeasleyResource(name))
+    filenamesProblems.foreach(name => problemBuffer ++= readResource(name))
     problemBuffer.map(problem => (problem.id, problem)).toMap
   }
 
-  private def readBeasleyResource(resource: String): List[BinPackProblem] = {
+  private def readResource(resource: String): List[BinPackProblem] = {
     val problemBuffer = new ListBuffer[BinPackProblem]
     val it = Source.fromURL(getClass.getResource(resource)).getLines()
     val numberOfProblems = if (it.hasNext) it.next.toInt
@@ -22,14 +22,14 @@ object Utils {
     while(it.hasNext) {
       val line = it.next
       if (line.matches("""^\s[ut]\d{2,4}_\d{2}\s*$""")) {
-        problemBuffer += readBeasleyInstance(it, line.trim())
+        problemBuffer += readInstance(it, line.trim())
       }
     }
     assert(numberOfProblems == problemBuffer.length, "Expected "+numberOfProblems+" but read "+problemBuffer.length+" problems")  
     problemBuffer.toList
   }
 
-  private def readBeasleyInstance(it: Iterator[String], problemID: String): BinPackProblem = {
+  private def readInstance(it: Iterator[String], problemID: String): BinPackProblem = {
     val itemBuffer = new ListBuffer[Item]
     val properties = it.next.trim().split("\\s")
     val binCapacity = properties(0).toDouble
