@@ -1,4 +1,4 @@
-name := "EvoBinpack"
+name := "bpEvolver"
 
 version := "0.1"
 

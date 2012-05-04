@@ -1,4 +1,4 @@
-class CustomEvolver(configuration: EvolverConfiguration) extends Evolver(configuration) {
+class CustomEvolver(configuration: Configuration) extends Evolver(configuration) {
 
   def evolve(population: Population): Population = {
     println(population)

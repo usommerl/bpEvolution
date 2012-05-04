@@ -1,7 +1,7 @@
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-abstract class Evolver(configuration: EvolverConfiguration){
+abstract class Evolver(configuration: Configuration){
 
   protected val problem = configuration.problem
   protected val initialPopulationSize = configuration.populationSize
@@ -62,16 +62,3 @@ abstract class Evolver(configuration: EvolverConfiguration){
     mutantBuffer.toList
   }
 }
-
-/*
- *case class EvolverConfiguration(
- *  val problem: BinPackProblem, 
- *  var populationSize: Int = 200, 
- *  var iterations: Int = 200, 
- *  var parentSelection: Selection = BestSelection, 
- *  var recombination: Recombination = OrderedRecombination, 
- *  var mutations: List[Mutation] = List(InversionMutation, ShiftingMutation), 
- *  var environmentSelection: Selection = TournamentSelection() ) {
- *  val genotypeDecoder = new SimpleDecoder(problem)
- *}
- */
