@@ -1,7 +1,7 @@
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-abstract class Evolver(configuration: Configuration){
+abstract class Evolution(configuration: Configuration) extends Traversable[Population]{
 
   protected val problem = configuration.problem
   protected val initialPopulationSize = configuration.populationSize
@@ -13,13 +13,15 @@ abstract class Evolver(configuration: Configuration){
   protected val environmentSelection = configuration.environmentSelection
   private var population = initializePopulation(initialPopulationSize, problem)
 
-  def run() {
-    while (population.best.quality > problem.bestKnownSolution && population.generation <= maxGenerations) { 
-       population = evolve(population)
+  def evolve(population: Population): Population
+
+  def foreach[U](f: (Population) ⇒ U): Unit = {
+    while (population.best.quality > problem.bestKnownSolution && 
+           population.generation <= maxGenerations) { 
+      f(population)
+      population = this.evolve(population)
     }
   }
-
-  def evolve(population: Population): Population
 
   protected def initializePopulation(size: Int, problem: BinPackProblem): Population = {
     require(problem != null)

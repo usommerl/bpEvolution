@@ -3,11 +3,13 @@ object Main {
   def main(args: Array[String]) {
 
     val parser = ConfigurationParser
-    parser.parse(args, Configuration()) map { config =>
+    parser.parse(args, Configuration()) map { configuration =>
       
-      println(config)
-      val evolver = new CustomEvolver(config)
-      evolver.run()
+      println(configuration)
+      val evolution = new CustomEvolution(configuration)
+      for (population <- evolution) {
+        println(population)
+      }
       
     } 
   }
