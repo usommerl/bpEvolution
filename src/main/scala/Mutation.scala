@@ -3,7 +3,7 @@ import scala.util.Random
 trait Mutation {
   def mutate(individual: Individual): Individual
 
-  protected def cloneGenotype(genotype: List[Item]): (Array[Item], Array[Item]) = {
+  protected def cloneGenotype(genotype: Genotype): (Array[Item], Array[Item]) = {
     val a = genotype.toArray; val b = a.clone(); (a,b)
   }
   protected def generateRandomNumbers(max: Int): (Int,Int) = (Random.nextInt(max), Random.nextInt(max))

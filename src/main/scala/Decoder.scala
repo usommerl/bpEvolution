@@ -5,7 +5,7 @@ import java.lang.AssertionError
 
 abstract class GenotypeDecoder(problem: BinPackProblem){
 
-  def decode(genotype: List[Item]): List[Bin]
+  def decode(genotype: Genotype): Phenotype
 
   @elidable(ASSERTION)
   protected def assertPhenotypeIsValid(phenotype: List[Bin], problem: BinPackProblem){
@@ -22,7 +22,7 @@ abstract class GenotypeDecoder(problem: BinPackProblem){
 
 case class SimpleDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
 
-  def decode(genotype: List[Item]): List[Bin] = {
+  def decode(genotype: Genotype): Phenotype = {
     val binBuffer = new ListBuffer[Bin]
     val itemBuffer = new ListBuffer[Item]
     for (item <- genotype) { 
@@ -40,7 +40,7 @@ case class SimpleDecoder(problem: BinPackProblem) extends GenotypeDecoder(proble
 
 case class FirstFitDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
 
-  def decode(genotype: List[Item]): List[Bin] = {
+  def decode(genotype: Genotype): Phenotype = {
     val binBuffer = new ListBuffer[Bin]
     val itemBuffer = new ListBuffer[Item]
     for (item <- genotype) {
