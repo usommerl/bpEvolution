@@ -1,8 +1,9 @@
-import scala.collection.mutable.ListBuffer
 import scala.util.Random
+import scala.collection.mutable.ListBuffer
 
 abstract class Evolution(configuration: Configuration) extends Traversable[Population]{
-
+  
+  
   protected val problem = configuration.problem
   protected val initialPopulationSize = configuration.populationSize
   protected val maxGenerations = configuration.maxGenerations
@@ -11,14 +12,17 @@ abstract class Evolution(configuration: Configuration) extends Traversable[Popul
   protected val recombination = configuration.recombination
   protected val mutations = configuration.mutations
   protected val environmentSelection = configuration.environmentSelection
-  private var population = initializePopulation(initialPopulationSize, problem)
-
+  protected val qualityFunction = configuration.qualityFunction
+  
   def evolve(population: Population): Population
 
   def foreach[U](f: (Population) ⇒ U): Unit = {
-    while (population.best.quality > problem.bestKnownSolution && 
-           population.generation <= maxGenerations) { 
+    var population = initializePopulation(initialPopulationSize, problem)
+    var qualityWorseThanBestKnownSolution = true
+    while (population.generation <= maxGenerations && qualityWorseThanBestKnownSolution) { 
       f(population)
+      if (population.best.quality.toInt == problem.bestKnownSolution) 
+        qualityWorseThanBestKnownSolution = false
       population = this.evolve(population)
     }
   }
@@ -29,14 +33,10 @@ abstract class Evolution(configuration: Configuration) extends Traversable[Popul
     val individualBuffer = new ListBuffer[Individual]
     for (i <- 1 to size) {
       val shuffledItems = Random.shuffle(problem.items)
-        val individual = new Individual(shuffledItems, this.genotypeDecoder)
+        val individual = new Individual(shuffledItems, this.genotypeDecoder, this.qualityFunction)
         individualBuffer += individual
     }
     new Population(0, individualBuffer.toList)
-  }
-
-  protected def bearAndMutateChildren(parents: List[Individual], spawnRate: Int = 1): List[Individual] = {
-    mutateIndividuals(bearChildren(parents, spawnRate))
   }
 
   protected def bearChildren(parents: List[Individual], spawnRate: Int = 1): List[Individual] = {
@@ -53,14 +53,17 @@ abstract class Evolution(configuration: Configuration) extends Traversable[Popul
   }
 
   protected def mutateIndividuals(individuals: List[Individual]): List[Individual] = {
-    val mutantBuffer = new ListBuffer[Individual]
     def applyMutations(individual: Individual, mutations: List[Mutation]): Individual = {
       mutations match { 
         case Nil        => individual
         case head::tail => head.mutate(applyMutations(individual, tail))
       }
     }
+    val mutantBuffer = new ListBuffer[Individual]
     for (individual <- individuals) mutantBuffer += applyMutations(individual, this.mutations)
     mutantBuffer.toList
   }
+
+  protected def bearAndMutateChildren(parents: List[Individual], spawnRate: Int = 1): List[Individual] = 
+    mutateIndividuals(bearChildren(parents, spawnRate))
 }

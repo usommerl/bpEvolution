@@ -18,7 +18,7 @@ object ShiftingMutation extends Mutation {
       for (j <- u2 until u1) b(j+1) = a(j)
     else 
       for (j <- u1+1 to u2) b(j-1) = a(j)
-    new Individual(b.toList, individual.decoder)
+    new Individual(b.toList, individual.decoder, individual.qualityFunction)
   }
 }
 
@@ -28,7 +28,7 @@ object ExchangeMutation extends Mutation {
     val (u1,u2) = generateRandomNumbers(a.size)
     b(u1) = a(u2)
     b(u2) = a(u1) 
-    new Individual(b.toList, individual.decoder)
+    new Individual(b.toList, individual.decoder, individual.qualityFunction)
   }
 }
 
@@ -38,6 +38,6 @@ object InversionMutation extends Mutation {
     var (u1,u2) = generateRandomNumbers(a.size)
     if (u1 > u2) {val tmp = u1; u1 = u2; u2 = tmp}
     for (j <- u1 to u2) b(u2+u1-j) = a(j)
-    new Individual(b.toList, individual.decoder)
+    new Individual(b.toList, individual.decoder, individual.qualityFunction)
   }
 }
