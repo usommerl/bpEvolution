@@ -1,7 +1,7 @@
 class Population(val generation: Int, val individuals: List[Individual]){
   
   private val genotypeFingerprints = individuals.map(_.genotype.hashCode).toSet
-  val diversity = genotypeFingerprints.size.toDouble / this.size
+  val diversity = (genotypeFingerprints.size.toDouble / this.size) * 100
   def size: Int = individuals.size
   def best: Individual = individuals.sorted.min
   def worst: Individual = individuals.sorted.max

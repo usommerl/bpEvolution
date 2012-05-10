@@ -58,13 +58,15 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
         },
         opt("d", "genotype-decoder", "<"+KeywordSimpleDecoder+"|"+KeywordFirstFitDecoder+">", "Decoder algorithm which translates the genotype of a"+iLF+"individual to its corresponding phenotype."){
           (v: String, c: Configuration) => v match {
-            case x if (x == KeywordSimpleDecoder || x == KeywordFirstFitDecoder || x == KeywordBestFitDecoder) 
-            => c.copy(decoderKeyword = v)
+            case x if (x == KeywordSimpleDecoder   || 
+                       x == KeywordFirstFitDecoder || 
+                       x == KeywordBestFitDecoder)    => c.copy(decoderKeyword = v)
           }
         },
         opt("q", "quality-function", "<"+KeywordQualityFunction1+"|"+KeywordQualityFunction2+">", "Quality function which evaluates the phenotype of a individual."){
           (v: String, c: Configuration) => v match {
-            case x if (x == KeywordQualityFunction1 || x == KeywordQualityFunction2) => c.copy(qualityFunctionKeyword = v)
+            case x if (x == KeywordQualityFunction1 || 
+                       x == KeywordQualityFunction2 ) => c.copy(qualityFunctionKeyword = v)
           }
         },
         opt("ps", "parent-selection", "<SELECTION>", "Algorithm which selects individuals for recombination."+selectionValues){
