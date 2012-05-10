@@ -120,8 +120,8 @@ object Utils {
                        config: Configuration, 
                        lineLength: Int = MaxLineLength): List[String] = {
     val buffer = new ListBuffer[String]; val sep = " "*3 
-    var genHeader = "# generation"; var bestHeader = "best quality"; 
-    var worstHeader = "worst quality";  var diversityHeader = "diversity"
+    var genHeader = "# generation"; var bestHeader = "quality best"; 
+    var worstHeader = "quality worst";  var diversityHeader = "diversity"
     val lengthMaxGenerations = config.maxGenerations.toString.length
     val a = config.problem.bestKnownSolution.toString.length+1; val b = 8 
     val bwFor = "%"+a+"."+b+"f"; val genFor = "%"+lengthMaxGenerations+"d"

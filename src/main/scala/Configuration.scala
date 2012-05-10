@@ -6,13 +6,14 @@ import scala.collection.mutable.ListBuffer
 case class Configuration(
   problem: BinPackProblem = null, 
   populationSize: Int = 500, 
-  maxGenerations: Int = 10, 
+  maxGenerations: Int = 500, 
   parentSelection: Selection = TournamentSelection(), 
   recombination: Recombination = OrderedRecombination, 
   mutations: List[Mutation] = List(ShiftingMutation), 
   environmentSelection: Selection = TournamentSelection(),
   decoderKeyword: String = ConfigurationParser.KeywordBestFitDecoder,
   qualityFunctionKeyword: String = ConfigurationParser.KeywordQualityFunction1,
+  earlyAbort: Boolean = true,
   outputFile: Option[File] = None
 ) {
   lazy val genotypeDecoder = this.decoderKeyword match {
@@ -38,6 +39,8 @@ case class Configuration(
 object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
 
       val iLF = "\n"++" "*8
+      val defaultPrefix = "The default value is '"
+      val defaulSuffix = "'"
       val selectionValues = iLF ++ "Valid SELECTION keywords are: best|random|tournament=<INTEGER>"
       val KeywordBestFitDecoder = "best-fit"
       val KeywordFirstFitDecoder = "first-fit"
@@ -50,20 +53,23 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
           (v: String, c: Configuration) => val problem = Utils.ProblemInstances.get(v)
              (problem: @unchecked) match { case Some(p) => c.copy(problem = p) }
         },
-        intOpt("s", "population-size", "<INTEGER>", "Size of the population."){
+        intOpt("s", "population-size", "<INTEGER>", "Size of the population. "+defaultPrefix+"500"+defaulSuffix){
           (v: Int, c: Configuration) => c.copy(populationSize = v)
         },
-        intOpt("g", "max-generations", "<INTEGER>", "Maximum number of generations."){
+        intOpt("g", "max-generations", "<INTEGER>", "Maximum number of generations. "+defaultPrefix+"500"+defaulSuffix){
           (v: Int, c: Configuration) => c.copy(maxGenerations = v)
         },
-        opt("d", "genotype-decoder", "<"+KeywordSimpleDecoder+"|"+KeywordFirstFitDecoder+">", "Decoder algorithm which translates the genotype of a"+iLF+"individual to its corresponding phenotype."){
+        booleanOpt("a", "abort-early", "<true|false>" ,"Abort the evolution immediately if a individual is on par with the best"+iLF+"known solution. "+defaultPrefix+"true"+defaulSuffix) { 
+          (v: Boolean, c: Configuration) => c.copy(earlyAbort = v) 
+        },
+        opt("d", "genotype-decoder", "<"+KeywordSimpleDecoder+"|"+KeywordFirstFitDecoder+"|"+KeywordBestFitDecoder+">", "Decoder heuristic which translates the genotype of a individual to its"+iLF+"corresponding phenotype. "+defaultPrefix+KeywordBestFitDecoder+defaulSuffix){
           (v: String, c: Configuration) => v match {
             case x if (x == KeywordSimpleDecoder   || 
                        x == KeywordFirstFitDecoder || 
                        x == KeywordBestFitDecoder)    => c.copy(decoderKeyword = v)
           }
         },
-        opt("q", "quality-function", "<"+KeywordQualityFunction1+"|"+KeywordQualityFunction2+">", "Quality function which evaluates the phenotype of a individual."){
+        opt("q", "quality-function", "<"+KeywordQualityFunction1+"|"+KeywordQualityFunction2+">", "Quality function which evaluates the phenotype of a individual."+iLF+defaultPrefix+KeywordQualityFunction1+defaulSuffix){
           (v: String, c: Configuration) => v match {
             case x if (x == KeywordQualityFunction1 || 
                        x == KeywordQualityFunction2 ) => c.copy(qualityFunctionKeyword = v)
@@ -78,7 +84,7 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
             case "ordered" => c.copy(recombination = OrderedRecombination)
           }
         },
-        opt("m", "mutation", "<none|MUTATION|{MUTATION,}>", "Algorithm which is used to mutate child individuals. If there is more than"+iLF+"one MUTATION specified, the algorithms will be apllied in the defined order."+iLF+"Valid MUTATION keywords are: inversion|shift|exhange "){
+        opt("m", "mutation", "<none|MUTATION{,MUTATION}>", "Algorithm which is used to mutate child individuals. If there is more than"+iLF+"one MUTATION specified, the algorithms will be applied in the defined order."+iLF+"Valid MUTATION keywords are: inversion|shift|exhange. "+defaultPrefix+"shift"+defaulSuffix){
           (v: String, c: Configuration) =>
             val mutationsBuffer = new ListBuffer[Mutation]
             for(mutationString <- v.split(',')) { mutationString match {
@@ -94,7 +100,7 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
           (v: String, c: Configuration) => val selection = getSelectionByKeyword(v)
             (selection: @unchecked) match { case Some(s) => c.copy(environmentSelection = s) }
         },
-        opt("o", "output", "<file>", ""){
+        opt("o", "output", "<file>", "Writes the program output to a file. In addition to the command line output,"+iLF+"detailed information about the bin occupancy of the best individual will be"+iLF+"written to the file as well."){
           (v: String, c: Configuration) => 
             val file = new File(v)
             if (file.exists) file.delete()

@@ -19,7 +19,7 @@ object Main {
       println()
       var bestIndividual: Individual = null
       formatConfiguration(configuration).foreach{ line => output(line) }
-      val evolution = new CustomEvolution(configuration)
+      val evolution = new Evolution(configuration)
       for (population <- evolution) {
         formatPopulation(population, configuration).foreach{ line => output(line) }
         bestIndividual = population.best

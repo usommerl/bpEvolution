@@ -1,8 +1,7 @@
 import scala.util.Random
 import scala.collection.mutable.ListBuffer
 
-abstract class Evolution(configuration: Configuration) extends Traversable[Population]{
-  
+class Evolution(configuration: Configuration) extends Traversable[Population]{
   
   protected val problem = configuration.problem
   protected val initialPopulationSize = configuration.populationSize
@@ -13,19 +12,25 @@ abstract class Evolution(configuration: Configuration) extends Traversable[Popul
   protected val mutations = configuration.mutations
   protected val environmentSelection = configuration.environmentSelection
   protected val qualityFunction = configuration.qualityFunction
-  
-  def evolve(population: Population): Population
-
-  def foreach[U](f: (Population) ⇒ U): Unit = {
+ 
+  def foreach[U](f: (Population) => U): Unit = {
     var population = initializePopulation(initialPopulationSize, problem)
     var qualityWorseThanBestKnownSolution = true
     while (population.generation <= maxGenerations && qualityWorseThanBestKnownSolution) { 
       f(population)
-      if (population.best.quality.toInt == problem.bestKnownSolution) 
+      if (population.best.quality.toInt == problem.bestKnownSolution &&
+          configuration.earlyAbort) 
         qualityWorseThanBestKnownSolution = false
-      population = this.evolve(population)
+      population = evolve(population)
     }
   }
+  
+  protected def evolve(population: Population): Population = {
+    val parents = parentSelection.select(population.individuals, population.individuals.size/2)
+    val children = bearAndMutateChildren(parents, 4)
+    val nextGeneration = environmentSelection.select(parents ++ children, population.size)  
+    new Population(population.generation + 1, nextGeneration)
+  } 
 
   protected def initializePopulation(size: Int, problem: BinPackProblem): Population = {
     require(problem != null)
@@ -53,12 +58,11 @@ abstract class Evolution(configuration: Configuration) extends Traversable[Popul
   }
 
   protected def mutateIndividuals(individuals: List[Individual]): List[Individual] = {
-    def applyMutations(individual: Individual, mutations: List[Mutation]): Individual = {
+    def applyMutations(individual: Individual, mutations: List[Mutation]): Individual = 
       mutations match { 
         case Nil        => individual
         case head::tail => head.mutate(applyMutations(individual, tail))
       }
-    }
     val mutantBuffer = new ListBuffer[Individual]
     for (individual <- individuals) mutantBuffer += applyMutations(individual, this.mutations)
     mutantBuffer.toList
