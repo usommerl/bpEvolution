@@ -11,8 +11,11 @@ abstract class GenotypeDecoder(problem: BinPackProblem){
   @elidable(ASSERTION)
   protected def assertPhenotypeIsValid(phenotype: List[Bin], problem: BinPackProblem){
     val numberOfItems = phenotype.flatMap(_.items).size;
-    assert(numberOfItems == problem.size, "Phenotype is not valid (numberOfItems="+numberOfItems+", problem.size="+problem.size+")")
-    val itemsInBins = phenotype.flatMap(_.items) 
+    assert(numberOfItems == problem.size, 
+      "Phenotype is not valid (numberOfItems="+numberOfItems+", problem.size="+problem.size+")")
+    val itemsInBins = phenotype.flatMap(_.items)
+    assert(itemsInBins.size == itemsInBins.toSet.size, 
+      "Bin contains duplicate item")
     for (item <- problem.items) 
       if (!itemsInBins.contains(item)) throw new AssertionError(item+" in Problem but not in phenotype")
     }

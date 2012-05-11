@@ -1,6 +1,6 @@
-class Item(val id: String, val size: Double) extends Ordered[Item]{
+class Item(val id: Int, val size: Double) extends Ordered[Item]{
 
-    override def toString = "[Item id="+id+", size="+size+"]"
+    override def toString = "[Item id="+id+"]"
 
     def compare(that: Item) = this.size.compare(that.size)
     

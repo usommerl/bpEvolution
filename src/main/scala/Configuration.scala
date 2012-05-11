@@ -79,9 +79,10 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
           (v: String, c: Configuration) => val selection = getSelectionByKeyword(v)
             (selection: @unchecked) match { case Some(s) => c.copy(parentSelection = s) }
         },
-        opt("r", "recombination", "<ordered>", "Algorithm which recombines two parent individuals."){
+        opt("r", "recombination", "<ordered|mapped>", "Algorithm which recombines two parent individuals."){
           (v: String, c: Configuration) => v match {
             case "ordered" => c.copy(recombination = OrderedRecombination)
+            case "mapped" => c.copy(recombination = PartiallyMappedCrossover)
           }
         },
         opt("m", "mutation", "<none|MUTATION{,MUTATION}>", "Algorithm which is used to mutate child individuals. If there is more than"+iLF+"one MUTATION specified, the algorithms will be applied in the defined order."+iLF+"Valid MUTATION keywords are: inversion|shift|exhange. "+defaultPrefix+"shift"+defaulSuffix){
@@ -100,7 +101,7 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
           (v: String, c: Configuration) => val selection = getSelectionByKeyword(v)
             (selection: @unchecked) match { case Some(s) => c.copy(environmentSelection = s) }
         },
-        opt("o", "output", "<file>", "Writes the program output to a file. In addition to the command line output,"+iLF+"detailed information about the bin occupancy of the best individual will be"+iLF+"written to the file as well."){
+        opt("o", "output", "<file>", "Writes the program output to a file. In addition to the command line output,"+iLF+"detailed information about the bin occupancy of the overall best individual"+iLF+"will be written to the file as well."){
           (v: String, c: Configuration) => 
             val file = new File(v)
             if (file.exists) file.delete()

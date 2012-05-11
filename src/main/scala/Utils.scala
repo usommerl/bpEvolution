@@ -43,8 +43,7 @@ object Utils {
     val bestKnownSolution = properties(2).toInt
     for (i <- 1 to numberOfItems) {
       if (it.hasNext)
-        itemBuffer += new Item((problemID+"_%0"+numberOfItems.toString.length+"d").format(i), 
-                                it.next().toDouble)
+        itemBuffer += new Item(i ,it.next().toDouble)
     }
     assert(numberOfItems == itemBuffer.length, 
            "Expected "+numberOfItems+" but read "+itemBuffer.length+" items")
@@ -158,6 +157,7 @@ object Utils {
   private def formatRecombination(r: Recombination): String = 
     r match {
       case x if (r == OrderedRecombination) => "ordered"
+      case x if (r == PartiallyMappedCrossover) => "mapped"
       case _ => throw new Exception("Don't know how to format "+r.toString)
     }
 

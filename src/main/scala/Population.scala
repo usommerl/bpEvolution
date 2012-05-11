@@ -1,5 +1,7 @@
 class Population(val generation: Int, val individuals: List[Individual]){
   
+// diversity look at: def sameElements[B >: A](that: GenIterable[B]): Boolean
+  
   private val genotypeFingerprints = individuals.map(_.genotype.hashCode).toSet
   val diversity = (genotypeFingerprints.size.toDouble / this.size) * 100
   def size: Int = individuals.size
