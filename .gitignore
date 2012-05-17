@@ -1,3 +1,5 @@
 target/
 *.swp
 *.*~
+main.pdf
+*.run.xml

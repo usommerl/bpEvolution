@@ -14,7 +14,7 @@
         \titlepageheader
         \Large
         \vspace*{-3mm}
-        \begin{minipage}[t]{.95\textwidth}
+        \begin{minipage}[t]{.942\textwidth}
             \textbf{\TITLE}        
         \end{minipage}
         \vspace{.6em}
@@ -26,11 +26,11 @@
         \normalsize
         \begin{tabbing}
              xxxxxxxxxI \= xxxxxxxxxxxxxxxxxxx\kill
-             \textbf{Autor:} \> \textit{Uwe Sommerlatt} <\href{mailto:usommerl@imn.htwk-leipzig.de?subject=\TITLE}{usommerl@imn.htwk-leipzig.de}>\\\\
+             \textbf{Autor:} \> \textit{Uwe Sommerlatt} <\href{mailto:usommerl@imn.htwk-leipzig.de?subject=\TITLE}{\texttt{usommerl@imn.htwk-leipzig.de}}>\\\\
             \textbf{Datum:} \> \today
         \end{tabbing}
-        \vspace{-1.2em}
-        {\color{rulegray}\rule[0cm]{\linewidth}{0.01cm}}\par
+        \vspace{-1.3em}
+        {\color{black}\rule[0cm]{\linewidth}{0.01cm}}\par
         %\vspace{-0.4em}
         \normalsize
         \setstretch{1.2}
@@ -39,22 +39,24 @@
         %\textbf{Kurzfassung: }\SUBJECT  
     \end{titlepage}
 
-    \setstretch{1.2}    
+    \setstretch{1.15}    
     %\thispagestyle{plain}\tableofcontents\pagestyle{scrheadings}\clearpage
 
     \section{Charakterisierung des Problems}
-    Das eindimensionale Behälterproblem (\textit{one-dimensional bin packing problem}) ist ein NP-schweres, kombinatorisches Optimierungsproblem, bei dem eine geeignete Zuordnung von $n \in N$ Objekten auf $k \in N$ Behälter gesucht wird. Die Behälter haben ein einheitliches Fassungsvermögen $b \in N$ und die einzelnen Objekte unterschiedliche, nichtnegative Größen $a_1, \dots ,a_n \le b$. Das Ziel der Optimierung ist die Minimierung der Anzahl benötigter Behälter $k$ für eine fest definierte Zusammenstellung von $n$ Objekten. Formal kann das Problem wie folgt beschrieben werden.
-    $$\exists f: i \in \{1,\dots,n\} \rightarrow j \in \{1,\dots,k\} \quad | \quad \forall j \displaystyle\sum\limits_{i:f(i) = j}^{}{a_i \le b} \text{, }  \text{ sodass }k\text{ minimal ist.}$$
+    \label{sec:problem}
+    Das eindimensionale Behälterproblem (\textit{one-dimensional bin packing problem}) ist ein NP-schweres, kombinatorisches Optimierungsproblem, bei dem eine geeignete Verteilung von $n \in N$ Objekten auf $k \in N$ Behälter gesucht wird. Die Behälter haben ein einheitliches Fassungsvermögen $b \in N$ und die einzelnen Objekte unterschiedliche, nichtnegative Größen $a_1, \dots ,a_n \le b$. Das Ziel der Optimierung ist die Minimierung der Anzahl benötigter Behälter $k$ für eine fest definierte Zusammenstellung von $n$ Objekten. Formal kann das Problem wie folgt beschrieben werden.
+    $$\exists f: \{1,\dots,n\} \rightarrow \{1,\dots,k\} \text{ } | \text{ } \forall j \in \{1,\dots,k\} \displaystyle\sum\limits_{i:f(i) = j}^{}{a_i \le b} \text{, }  \text{ die }k\text{ minimiert.}$$
 Da bei diesem Problem nur eine Dimension der zu verpackenden Objekte berücksichtigt wird, kann es auch als eindimensionales Zuschnittproblem (\textit{one-dimensional cutting stock problem}) betrachtet werden. \parencite[485]{KorteVygen:2008}
     
     \section{Beschreibung des entwickelten Algorithmus}
-    \subsection{Genotyp}
 
-    \subsection{Phenotyp und Decodierungsfunktion}
+    Um Methoden der evolutionären Algorithmik auf das in \autoref{sec:problem} beschriebene Problem anwenden zu können, muss zunächst eine geeignete Repräsentation für alle Lösungskandidaten des Problems modelliert werden. Diese auch als Individuum bezeichnete Repräsentation besteht aus einem Genotyp und einem Phänotyp. Der Genotyp ist das Erbgut des Individuums und stellt seinen individuellen Satz von Genen dar. In der konkreten Umsetzung ist ein Gen genau ein Objekt aus einer Instanz des Behälterproblems. Dementsprechend ist der Genotyp eine Permutation aller Objekte in der Probleminstanz. Der Phänotyp ist das Erscheinungsbild bzw. die Menge aller äußeren Merkmale des Individuums und wird im Wesentlichen durch den Genotyp bestimmt. In seiner Ausprägung für das Behälterproblem ist der Phänotyp daher eine eindeutige Zuordnung der Objekte zu einem Behälter. Die Translation des Genotyps in den zugehörigen Phänotyp wird durch eine Decodierungsfunktion definiert. 
+    
+    \subsection{Decodierungsfunktionen}
+    
+    \parencite{MitsuCheng:1999}
 
-    \subsection{Gütefunktion}
-
-    \section{Probleminstanzen}
+    \section{Bearbeitete Probleminstanzen}
     Für die praktische Analyse des entwickelten Algorithmus werden vorhandene Datensätze aus der \textit{Operations Research} (OR) Bibliothek\footnote{\url{http://people.brunel.ac.uk/~mastjjb/jeb/info.html}} von J. E. Beasley verwendet. Ursprünglich wurden diese Datensätze zur Untersuchung des \textit{Hybrid Grouping Genetic Algorithm} (HGGA) von E. Falkenauer konstruiert \parencite{Falkenauer:1996}. Die OR-Bibliothek stellt insgesamt acht Dateien mit 160 Instanzen des eindimensionalen Behälterproblems zur Verfügung. Diese wurden direkt in die Ressourcen der entwickelten Anwendung integriert, sodass alle Datensätze komfortabel bearbeitet werden können. Bei den vorhandenen Datensätzen wird zwischen Problemen der Klasse \uniform und der Klasse \triplets unterschieden. Probleme der \uniform-Klasse bestehen aus Gegenständen mit einer gleichmäßig verteilten Größe zwischen 20 und 100 Einheiten. Diese müssen in Behälter mit einem Fassungsvermögen von 150 Einheiten einsortiert werden. Die Probleme der \triplets-Klasse enthalten Gegenstände mit einer Größe von 25 bis 50 Einheiten und die zu bestückenden Behälter besitzen ein Fassungsvermögen von 100 Einheiten. Aufgrund der Konstruktion der \triplets-Probleminstanzen, wird für einen gut gefüllten Behälter ein großer Gegenstand und zwei kleinere benötigt. Dabei muss der große Gegenstand mehr als die Hälfte des Fassungsvermögens des Behälters einnehmen. Die Intention bei der Entwicklung der \triplets-Klasse war die Erforschung der praktischen Grenzen von Falkenauers HGGA \parencite[17]{Falkenauer:1996}. Aus diesem Grund sind Probleminstanzen der \triplets-Klasse als komplexer einzustufen als Instanzen der \uniform-Klasse.
 
     Alle Probleminstanzen werden durch einen eindeutigen Identifikator gekennzeichnet. Probleme deren Identifikator mit einem '\texttt{u}' beginnt gehören zur \uniform-Klasse. Identifikatoren, die mit einem '\texttt{t}' beginnen, bezeichnen dagegen Probleme der \triplets-Klasse. Nach dem Buchstaben für die Klassenzugehörigkeit folgt die Anzahl der Gegenstände in der Probleminstanz und die Nummer des Problems. Für die \uniform-Klasse existieren jeweils zwanzig Probleme mit 120, 250, 500 und 1000 Gegenständen. Die Nummerierung beginnt für jede Problemgröße von neuem bei 0. Valide Identifikatoren für Probleme der \uniform-Klasse sind somit beispielsweise \texttt{u120\_00}, \texttt{u250\_00} oder \texttt{u500\_19}. Analog dazu existieren jeweils zwanzig Probleme mit 60, 120, 249 und 501 Gegenständen für die \triplets-Klasse. Der Aufbau der Identifikatoren ist mit denen der \uniform-Klasse identisch.
