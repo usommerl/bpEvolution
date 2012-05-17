@@ -1,0 +1,72 @@
+\newcommand{\KEYWORDS}{Evolution\"are Algorithmen, one-dimensional bin packing}
+\newcommand{\TITLE}{Entwicklung eines evolution\"aren Algorithmus zur Bearbeitung des eindimensionalen Beh\"alterproblems}
+\newcommand{\SUBTITLE}{Projektarbeit Evolution\"are Algorithmen SS 2012}
+\newcommand{\INSTITUTE}{Hochschule f\"ur Technik, Wirtschaft und Kultur Leipzig}
+\newcommand{\DEPARTMENT}{Fakult\"at f\"ur Informatik, Mathematik und Naturwissenschaften}
+\newcommand{\AUTHOR}{Uwe Sommerlatt}
+\newcommand{\SUBJECT}{}
+
+\input{preamble.tex}
+
+\begin{document}
+
+    \begin{titlepage}
+        \titlepageheader
+        \Large
+        \vspace*{-3mm}
+        \begin{minipage}[t]{.95\textwidth}
+            \textbf{\TITLE}        
+        \end{minipage}
+        \vspace{.6em}
+
+        \large
+        \SUBTITLE\\
+        \INSTITUTE\\
+        \DEPARTMENT\par
+        \normalsize
+        \begin{tabbing}
+             xxxxxxxxxI \= xxxxxxxxxxxxxxxxxxx\kill
+             \textbf{Autor:} \> \textit{Uwe Sommerlatt} <\href{mailto:usommerl@imn.htwk-leipzig.de?subject=\TITLE}{usommerl@imn.htwk-leipzig.de}>\\\\
+            \textbf{Datum:} \> \today
+        \end{tabbing}
+        \vspace{-1.2em}
+        {\color{rulegray}\rule[0cm]{\linewidth}{0.01cm}}\par
+        %\vspace{-0.4em}
+        \normalsize
+        \setstretch{1.2}
+        \textbf{Schlüsselwörter: }\KEYWORDS
+        \par
+        %\textbf{Kurzfassung: }\SUBJECT  
+    \end{titlepage}
+
+    \setstretch{1.2}    
+    %\thispagestyle{plain}\tableofcontents\pagestyle{scrheadings}\clearpage
+
+    \section{Charakterisierung des Problems}
+    Das eindimensionale Behälterproblem (\textit{one-dimensional bin packing problem}) ist ein NP-schweres, kombinatorisches Optimierungsproblem, bei dem eine geeignete Zuordnung von $n \in N$ Objekten auf $k \in N$ Behälter gesucht wird. Die Behälter haben ein einheitliches Fassungsvermögen $b \in N$ und die einzelnen Objekte unterschiedliche, nichtnegative Größen $a_1, \dots ,a_n \le b$. Das Ziel der Optimierung ist die Minimierung der Anzahl benötigter Behälter $k$ für eine fest definierte Zusammenstellung von $n$ Objekten. Formal kann das Problem wie folgt beschrieben werden.
+    $$\exists f: i \in \{1,\dots,n\} \rightarrow j \in \{1,\dots,k\} \quad | \quad \forall j \displaystyle\sum\limits_{i:f(i) = j}^{}{a_i \le b} \text{, }  \text{ sodass }k\text{ minimal ist.}$$
+Da bei diesem Problem nur eine Dimension der zu verpackenden Objekte berücksichtigt wird, kann es auch als eindimensionales Zuschnittproblem (\textit{one-dimensional cutting stock problem}) betrachtet werden. \parencite[485]{KorteVygen:2008}
+    
+    \section{Beschreibung des entwickelten Algorithmus}
+    \subsection{Genotyp}
+
+    \subsection{Phenotyp und Decodierungsfunktion}
+
+    \subsection{Gütefunktion}
+
+    \section{Probleminstanzen}
+    Für die praktische Analyse des entwickelten Algorithmus werden vorhandene Datensätze aus der \textit{Operations Research} (OR) Bibliothek\footnote{\url{http://people.brunel.ac.uk/~mastjjb/jeb/info.html}} von J. E. Beasley verwendet. Ursprünglich wurden diese Datensätze zur Untersuchung des \textit{Hybrid Grouping Genetic Algorithm} (HGGA) von E. Falkenauer konstruiert \parencite{Falkenauer:1996}. Die OR-Bibliothek stellt insgesamt acht Dateien mit 160 Instanzen des eindimensionalen Behälterproblems zur Verfügung. Diese wurden direkt in die Ressourcen der entwickelten Anwendung integriert, sodass alle Datensätze komfortabel bearbeitet werden können. Bei den vorhandenen Datensätzen wird zwischen Problemen der Klasse \uniform und der Klasse \triplets unterschieden. Probleme der \uniform-Klasse bestehen aus Gegenständen mit einer gleichmäßig verteilten Größe zwischen 20 und 100 Einheiten. Diese müssen in Behälter mit einem Fassungsvermögen von 150 Einheiten einsortiert werden. Die Probleme der \triplets-Klasse enthalten Gegenstände mit einer Größe von 25 bis 50 Einheiten und die zu bestückenden Behälter besitzen ein Fassungsvermögen von 100 Einheiten. Aufgrund der Konstruktion der \triplets-Probleminstanzen, wird für einen gut gefüllten Behälter ein großer Gegenstand und zwei kleinere benötigt. Dabei muss der große Gegenstand mehr als die Hälfte des Fassungsvermögens des Behälters einnehmen. Die Intention bei der Entwicklung der \triplets-Klasse war die Erforschung der praktischen Grenzen von Falkenauers HGGA \parencite[17]{Falkenauer:1996}. Aus diesem Grund sind Probleminstanzen der \triplets-Klasse als komplexer einzustufen als Instanzen der \uniform-Klasse.
+
+    Alle Probleminstanzen werden durch einen eindeutigen Identifikator gekennzeichnet. Probleme deren Identifikator mit einem '\texttt{u}' beginnt gehören zur \uniform-Klasse. Identifikatoren, die mit einem '\texttt{t}' beginnen, bezeichnen dagegen Probleme der \triplets-Klasse. Nach dem Buchstaben für die Klassenzugehörigkeit folgt die Anzahl der Gegenstände in der Probleminstanz und die Nummer des Problems. Für die \uniform-Klasse existieren jeweils zwanzig Probleme mit 120, 250, 500 und 1000 Gegenständen. Die Nummerierung beginnt für jede Problemgröße von neuem bei 0. Valide Identifikatoren für Probleme der \uniform-Klasse sind somit beispielsweise \texttt{u120\_00}, \texttt{u250\_00} oder \texttt{u500\_19}. Analog dazu existieren jeweils zwanzig Probleme mit 60, 120, 249 und 501 Gegenständen für die \triplets-Klasse. Der Aufbau der Identifikatoren ist mit denen der \uniform-Klasse identisch.
+
+    Die theoretisch minimal benötigte Anzahl an Behältern für eine Probleminstanz kann wie folgt dargestellt werden. $$k_{tmin} = \left\lceil \frac{\sum_{i=1}^{n} a_i}{b} \right\rceil$$
+
+Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theoretisch optimale Lösung für alle Instanzen außer \texttt{u120\_08}, \texttt{u120\_19}, \texttt{u250\_07}, \texttt{u250\_12}, \texttt{u250\_13}, \texttt{t60\_07} und \texttt{t60\_18} auch praktisch ermittelt werden. Für die eben genannten Instanzen wurde dagegen eine Lösung errechnet, die jeweils einen Behälter mehr benötigt als die theoretische minimale Lösung. \parencite[19-22]{Falkenauer:1996} 
+    
+    
+    \clearpage
+    \pagestyle{empty}
+    \printbibliography[heading=bibintoc]
+
+\end{document}
+

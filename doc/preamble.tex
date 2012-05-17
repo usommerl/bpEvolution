@@ -1,0 +1,220 @@
+\documentclass[german,
+               fontsize=12pt,
+               oneside,
+               BCOR=0mm, 
+               DIV=9,
+               bibliography=totoc,
+               numbers=noendperiod,
+               pagesize,
+               headsepline,
+               parskip=full+,
+               ]{scrartcl}
+
+% fonts & Symbols
+\usepackage[T1]{fontenc}
+\usepackage{lmodern, pifont, marvosym}
+\renewcommand*\familydefault{\sfdefault}
+\usepackage[scaled=.85]{beramono}
+%\renewcommand{\ttdefault}{fvm}
+
+% line spacing
+\usepackage{setspace}
+
+% miscellaneous spacing and offset measures
+\setlength{\fboxsep}{0mm}
+\setlength{\parindent}{0mm}
+\setlength{\belowcaptionskip}{0em} 
+
+% color
+\usepackage{color,layout,float}
+\definecolor{htwk}{RGB}{35,71,160}
+\definecolor{graphicbg}{RGB}{240,240,240}
+\definecolor{listingbg}{RGB}{240,240,240}
+\definecolor{rulegray}{RGB}{210,210,210}
+\definecolor{todo}{RGB}{220,0,0}
+\definecolor{comment}{RGB}{63,127,95}
+\definecolor{darkgray}{RGB}{180,180,180}
+
+% encoding and language
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+
+% theorems
+\usepackage[framed]{ntheorem}
+\usepackage{framed}
+\theorempreskipamount-0.3em
+\theorempostskipamount-0.2em
+\renewcommand*\FrameCommand{\fboxsep10pt \fcolorbox{listingbg}{listingbg}}
+%\renewcommand*\FrameCommand{{\color{black}\vrule width 2pt \hspace{1em}}}
+\theoremstyle{nonumberplain}
+\theoremsymbol{}
+\theoremseparator{:}
+\newframedtheorem{definition}{Definition}
+
+% heading & footer
+\usepackage{scrpage2}
+\automark{section}
+\pagestyle{scrheadings}
+\setheadwidth[0pt]{\linewidth}
+
+% figures
+\usepackage[pdftex]{graphicx}
+\graphicspath{{figures/}{images/}{gfx/}{../figures/}}
+
+% include entire pdf pages
+\usepackage[final]{pdfpages}
+
+% TOC, LOT, LOF, LOL layout style
+\usepackage{tocstyle}
+\usetocstyle{standard}
+
+% Title format
+\usepackage{titlesec}
+\titleformat{\paragraph}[display]{\bfseries\normalsize}{}{}{}[]
+\titlespacing*{\paragraph}{0pt}{0pt}{-1\parskip}[0pt]
+
+% code listings
+\usepackage{listings}
+\lstset{captionpos           =b,
+        basicstyle           =\ttfamily \footnotesize,
+        keywordstyle         =\bfseries,
+        aboveskip            =\parskip,
+        breaklines           =true,
+        breakautoindent      =false,
+        tabsize              =4,
+        numbers              =none, 
+        frame                =single,
+        framerule            =0pt,
+        framesep             =.5em,
+        xleftmargin          =.5em,
+        framexleftmargin     =0em,
+        backgroundcolor      =\color{listingbg},
+        showstringspaces     =false}%
+\renewcommand{\lstlistlistingname}{Listingverzeichnis}
+
+% itemize, enumerate, description
+\usepackage{enumitem}
+\setlist[1]{leftmargin=3em}
+\setlist{labelsep=.8em}
+\setitemize{label=\Forward}
+	
+% captions
+\usepackage[small, bf]{caption}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\AtBeginDocument{\numberwithin{lstlisting}{section}}
+\AtBeginDocument{\numberwithin{figure}{section}}
+
+% phonetic spelling
+\usepackage[T1]{tipa}
+
+% comment environment
+\usepackage{verbatim}
+
+% hyperlinks and meta-information
+\usepackage[bookmarksnumbered,
+            linktoc             =all,
+            colorlinks          =false,
+            urlcolor            =htwk,
+            linkcolor           =htwk,
+            citecolor           =htwk,
+            pdfborder           ={0 0 0},
+            linkbordercolor     ={1 1 1},
+            urlbordercolor      ={1 1 1},
+            pdfstartview        ={Fit},
+            pdfpagelayout       ={SinglePage},
+            pdfauthor           ={\AUTHOR},
+            pdftitle            ={\TITLE},
+            pdfkeywords         ={\KEYWORDS},
+            pdfsubject          ={\SUBJECT},
+            ]{hyperref}
+
+% footnote numbering
+%\usepackage{chngcntr} 
+%\counterwithout{footnote}{chapter}
+            
+% list of abbreviations, glossary
+\usepackage[
+   nonumberlist,   
+   acronym,        
+   toc,            
+   section=section 
+  ]{glossaries}  
+\makeglossaries
+%\input{acronym.tex}
+%\input{glossary.tex}
+
+\newglossarystyle{customlistdotted}{%
+\glossarystyle{altlist}          % base this style on the listdotted style
+\renewcommand{\glsgroupskip}{}      % make nothing happen between groups
+}
+
+% page numbering 
+\pagenumbering{arabic}
+
+\AtBeginDocument{\author{\AUTHOR}}
+\AtBeginDocument{\title{\TITLE}}
+\AtBeginDocument{\subtitle{\SUBTITLE}}
+
+%%%% bibliography %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\usepackage[babel,german=quotes]{csquotes}
+\usepackage[style=alphabetic,
+            hyperref=true,
+            ]{biblatex}
+%  colon after author name
+\renewcommand*{\labelnamepunct}{\addcolon\space}
+
+% heading bibliography
+\DefineBibliographyStrings{ngerman}{
+    %bibliography={Literaturverzeichnis}
+    references={Literaturverzeichnis}    % document class: scrartcl
+}
+% acronyms (simulate small caps for latin modern font)
+\renewcommand*{\mkbibacro}[1]{
+    {\textsf{\footnotesize{#1}}}}
+
+% name format: "Lastname, F."
+\DeclareNameFormat{default}{%
+  \iffirstinits
+    {\usebibmacro{name:last-first}{#1}{#4}{#5}{#7}}
+    {\usebibmacro{name:last-first}{#1}{#4}{#5}{#7}}%
+  \usebibmacro{name:andothers}}
+
+% "/" between multiple author names 
+\renewcommand*{\multinamedelim}{\addslash}
+\renewcommand*{\finalnamedelim}{\addslash}
+
+% change abbreviation urlseen for web-references
+\DefineBibliographyStrings {german}{%											
+urlseen = {Letzter Zugriff:},
+}
+
+\bibliography{bibliography}
+%%%% custom commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\newcommand{\todo}[1]{{\bfseries \color{todo}TODO: \color{comment}#1}}
+\newcommand{\emptypage}{\newpage\thispagestyle{empty}\mbox{}\newpage}
+
+% titlepage header
+\usepackage[absolute, overlay]{textpos}
+\newcommand{\logowidth}{20mm}
+\newcommand{\marginwidth}{.5\paperwidth-.5\linewidth}
+\newcommand{\logoxpos}{(\marginwidth+.5\linewidth-\logowidth/2)+\logowidth/20}
+\newcommand{\titlepageheader}{\begin{textblock*}{\linewidth}(\marginwidth,35mm)
+                                 {\color{htwk}
+                                 \rule{\linewidth}{1.5mm}}
+                              \end{textblock*}
+                              \begin{textblock*}{\paperwidth}(\logoxpos,22mm)
+                                 \begin{figure}[H]
+                                    \includegraphics[width=\logowidth]{htwk_logo}
+                                 \end{figure}
+                              \end{textblock*}%
+}
+
+% formatting and naming conventions
+\usepackage{xspace}
+\newcommand{\triplets}{\textit{Triplets}\xspace}
+\newcommand{\uniform}{\textit{Uniform}\xspace}
