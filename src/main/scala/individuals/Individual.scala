@@ -1,5 +1,3 @@
-import scala.math.pow
-
 class Individual(val genotype: Genotype, val decoder: GenotypeDecoder, val qualityFunction: Phenotype => Double) extends Ordered[Individual]{
   
   lazy val phenotype: Phenotype = this.decoder.decode(genotype)
