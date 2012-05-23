@@ -24,7 +24,7 @@ abstract class GenotypeDecoder(problem: BinPackProblem){
 
 }
 
-case class SimpleDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
+case class NextFitDecoder(problem: BinPackProblem) extends GenotypeDecoder(problem) {
 
   def decode(genotype: Genotype): Phenotype = {
     val binBuffer = new ListBuffer[Bin]
@@ -74,16 +74,13 @@ case class BestFitDecoder(problem: BinPackProblem) extends GenotypeDecoder(probl
   def decode(genotype: Genotype): Phenotype = {
     val binBuffer = new ListBuffer[Bin]
     for (item <- genotype) {
-      if (binBuffer.isEmpty) binBuffer += new Bin(this.problem.binCapacity, List(item))
-      else {
-         val capableBins = for (bin <- binBuffer if bin.remainingCapacity >= item.size) yield bin 
-         if (capableBins.isEmpty) binBuffer += new Bin(this.problem.binCapacity, List(item))
-         else {
-            val existingBin = capableBins.sortWith(_.remainingCapacity < _.remainingCapacity).head
-            binBuffer -= existingBin
-            binBuffer += new Bin(this.problem.binCapacity, existingBin.items ++ List(item))
-         }
-      }
+       val capableBins = for (bin <- binBuffer if bin.remainingCapacity >= item.size) yield bin 
+       if (capableBins.isEmpty) binBuffer += new Bin(this.problem.binCapacity, List(item))
+       else {
+          val existingBin = capableBins.sortWith(_.remainingCapacity < _.remainingCapacity).head
+          binBuffer -= existingBin
+          binBuffer += new Bin(this.problem.binCapacity, existingBin.items ++ List(item))
+       }
     }
     assertPhenotypeIsValid(binBuffer.toList, this.problem)
     new Phenotype(binBuffer.toList)

@@ -6,9 +6,10 @@ import scala.collection.mutable.ListBuffer
 case class Configuration(
   problem: BinPackProblem = null, 
   populationSize: Int = 500, 
-  maxGenerations: Int = 500, 
+  maxGenerations: Int = 1000,
+  parentSelectionImpact: Int = 3,
   parentSelection: Selection = TournamentSelection(), 
-  recombination: Recombination = OrderedRecombination, 
+  recombination: Recombination = PartiallyMappedCrossover, 
   mutations: List[Mutation] = List(ShiftingMutation), 
   environmentSelection: Selection = TournamentSelection(),
   decoderKeyword: String = ConfigurationParser.KeywordBestFitDecoder,
@@ -17,7 +18,7 @@ case class Configuration(
   outputFile: Option[File] = None
 ) {
   lazy val genotypeDecoder = this.decoderKeyword match {
-    case ConfigurationParser.KeywordSimpleDecoder => SimpleDecoder(problem)
+    case ConfigurationParser.KeywordNextFitDecoder => NextFitDecoder(problem)
     case ConfigurationParser.KeywordFirstFitDecoder => FirstFitDecoder(problem)
     case ConfigurationParser.KeywordBestFitDecoder => BestFitDecoder(problem)
   }
@@ -44,27 +45,27 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
       val selectionValues = iLF ++ "Valid SELECTION keywords are: best|random|tournament=<INTEGER>"
       val KeywordBestFitDecoder = "best-fit"
       val KeywordFirstFitDecoder = "first-fit"
-      val KeywordSimpleDecoder = "simple"
+      val KeywordNextFitDecoder = "next-fit"
       val KeywordQualityFunction1 = "v1"
       val KeywordQualityFunction2 = "v2"
       
       def options = { Seq(
         arg( "<problem-id>", "Identifier of the E. Falkenauer problem instance (see: http://goo.gl/Noa4S)."){ 
-          (v: String, c: Configuration) => val problem = Utils.ProblemInstances.get(v)
+          (v: String, c: Configuration) => val problem = Ressources.ProblemInstances.get(v)
              (problem: @unchecked) match { case Some(p) => c.copy(problem = p) }
         },
         intOpt("s", "population-size", "<INTEGER>", "Size of the population. "+defaultPrefix+"500"+defaulSuffix){
           (v: Int, c: Configuration) => c.copy(populationSize = v)
         },
-        intOpt("g", "max-generations", "<INTEGER>", "Maximum number of generations. "+defaultPrefix+"500"+defaulSuffix){
+        intOpt("g", "max-generations", "<INTEGER>", "Maximum number of generations. "+defaultPrefix+"1000"+defaulSuffix){
           (v: Int, c: Configuration) => c.copy(maxGenerations = v)
         },
         booleanOpt("a", "abort-early", "<true|false>" ,"Abort the evolution immediately if a individual is on par with the best"+iLF+"known solution. "+defaultPrefix+"true"+defaulSuffix) { 
           (v: Boolean, c: Configuration) => c.copy(earlyAbort = v) 
         },
-        opt("d", "genotype-decoder", "<"+KeywordSimpleDecoder+"|"+KeywordFirstFitDecoder+"|"+KeywordBestFitDecoder+">", "Decoder heuristic which translates the genotype of a individual to its"+iLF+"corresponding phenotype. "+defaultPrefix+KeywordBestFitDecoder+defaulSuffix){
+        opt("d", "genotype-decoder", "<"+KeywordNextFitDecoder+"|"+KeywordFirstFitDecoder+"|"+KeywordBestFitDecoder+">", "Decoder heuristic which translates the genotype of a individual to its"+iLF+"corresponding phenotype. "+defaultPrefix+KeywordBestFitDecoder+defaulSuffix){
           (v: String, c: Configuration) => v match {
-            case x if (x == KeywordSimpleDecoder   || 
+            case x if (x == KeywordNextFitDecoder   || 
                        x == KeywordFirstFitDecoder || 
                        x == KeywordBestFitDecoder)    => c.copy(decoderKeyword = v)
           }
