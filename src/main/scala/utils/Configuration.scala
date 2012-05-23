@@ -46,8 +46,8 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
       val KeywordBestFitDecoder = "best-fit"
       val KeywordFirstFitDecoder = "first-fit"
       val KeywordNextFitDecoder = "next-fit"
-      val KeywordQualityFunction1 = "v1"
-      val KeywordQualityFunction2 = "v2"
+      val KeywordQualityFunction1 = "1"
+      val KeywordQualityFunction2 = "2"
       
       def options = { Seq(
         arg( "<problem-id>", "Identifier of the E. Falkenauer problem instance (see: http://goo.gl/Noa4S)."){ 
