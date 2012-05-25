@@ -51,10 +51,11 @@ object Formatter {
     val buffer = new ListBuffer[String]
     buffer += formatPrefix("date")+getDateString("yyyy-MM-dd HH:mm:ss")
     buffer += formatPrefix("problem identifier")+config.problem.id
+    buffer += formatPrefix("theoretical optimum")+config.problem.theoreticalOptimum
     buffer += formatPrefix("best known solution")+config.problem.bestKnownSolution
     buffer += formatPrefix("population size")+config.populationSize
     buffer += formatPrefix("genotype decoder")+config.decoderKeyword
-    buffer += formatPrefix("quality function")+config.qualityFunctionKeyword
+    buffer += formatPrefix("quality function")+"q"+config.qualityFunctionKeyword
     buffer += formatPrefix("parent selection")+formatSelection(config.parentSelection)
     buffer += formatPrefix("recombination")+formatRecombination(config.recombination)
     buffer += formatPrefix("mutation(s)")+formatMutations(config.mutations)

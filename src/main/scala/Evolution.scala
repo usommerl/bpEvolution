@@ -1,35 +1,34 @@
 import scala.util.Random
 import scala.collection.mutable.ListBuffer
+import scala.math.ceil
 
 class Evolution(configuration: Configuration) extends Traversable[Population]{
   
-  protected val problem = configuration.problem
-  protected val initialPopulationSize = configuration.populationSize
-  protected val maxGenerations = configuration.maxGenerations
-  protected val genotypeDecoder = configuration.genotypeDecoder
-  protected val parentSelection = configuration.parentSelection
-  protected val parentSelectionImpact = configuration.parentSelectionImpact
-  protected val recombination = configuration.recombination
-  protected val mutations = configuration.mutations
-  protected val environmentSelection = configuration.environmentSelection
-  protected val qualityFunction = configuration.qualityFunction
- 
+  private val problem = configuration.problem
+  private val initialPopulationSize = configuration.populationSize
+  private val maxGenerations = configuration.maxGenerations
+  private val genotypeDecoder = configuration.genotypeDecoder
+  private val parentSelection = configuration.parentSelection
+  private val parentSelectionImpact = configuration.parentSelectionImpact
+  private val recombination = configuration.recombination
+  private val mutations = configuration.mutations
+  private val environmentSelection = configuration.environmentSelection
+  private val qualityFunction = configuration.qualityFunction
+  
   def foreach[U](f: (Population) => U): Unit = {
     var population = initializePopulation(initialPopulationSize, problem)
-    var qualityWorseThanBestKnownSolution = true
-    while (population.generation <= maxGenerations && qualityWorseThanBestKnownSolution) { 
-      f(population)
-      if (population.best.quality.toInt == problem.bestKnownSolution &&
-          configuration.earlyAbort) 
-        qualityWorseThanBestKnownSolution = false
+    f(population)
+    while (population.generation <= maxGenerations &&
+           population.best.quality.toInt > problem.theoreticalOptimum ) { 
       population = evolve(population)
+      f(population)
     }
   }
   
   private def evolve(population: Population): Population = {
-    val parents = parentSelection.select(population.individuals, population.individuals.size/3)
-    val children = bearAndMutateChildren(parents, 4)
-    val nextGeneration = environmentSelection.select(parents ++ children, population.size)  
+    val parents = parentSelection.select(population.individuals, population.size/3)
+    val children = bearAndMutateChildren(parents, 3)
+    val nextGeneration = environmentSelection.select(population.individuals ++ children, population.size)  
     new Population(population.generation + 1, nextGeneration)
   } 
 

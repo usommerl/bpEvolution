@@ -14,7 +14,6 @@ case class Configuration(
   environmentSelection: Selection = TournamentSelection(),
   decoderKeyword: String = ConfigurationParser.KeywordBestFitDecoder,
   qualityFunctionKeyword: String = ConfigurationParser.KeywordQualityFunction1,
-  earlyAbort: Boolean = true,
   outputFile: Option[File] = None
 ) {
   lazy val genotypeDecoder = this.decoderKeyword match {
@@ -24,15 +23,15 @@ case class Configuration(
   }
 
   lazy val qualityFunction = this.qualityFunctionKeyword match {
-    case ConfigurationParser.KeywordQualityFunction1 => qF1
-    case ConfigurationParser.KeywordQualityFunction2 => qF2
+    case ConfigurationParser.KeywordQualityFunction1 => q1
+    case ConfigurationParser.KeywordQualityFunction2 => q2
   }
-
-  private val qF1: Phenotype => Double = (phenotype: Phenotype) => phenotype.size.toDouble
   
-  private val qF2: Phenotype => Double = (phenotype: Phenotype) => {
+  private val q1: Phenotype => Double = (phenotype: Phenotype) => phenotype.size.toDouble
+    
+  private val q2: Phenotype => Double = (phenotype: Phenotype) => {
     val quotient = ( 0.0 /: phenotype ) ( (sum,bin) => sum + pow(bin.remainingCapacity, 2.0))
-    val divisor = pow(this.problem.binCapacity, 2.0) * this.problem.items.size
+      val divisor = pow(this.problem.binCapacity, 2.0) * this.problem.items.size
     phenotype.size.toDouble + (quotient / divisor)
   }
 }
@@ -59,9 +58,6 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
         },
         intOpt("g", "max-generations", "<INTEGER>", "Maximum number of generations. "+defaultPrefix+"1000"+defaulSuffix){
           (v: Int, c: Configuration) => c.copy(maxGenerations = v)
-        },
-        booleanOpt("a", "abort-early", "<true|false>" ,"Abort the evolution immediately if a individual is on par with the best"+iLF+"known solution. "+defaultPrefix+"true"+defaulSuffix) { 
-          (v: Boolean, c: Configuration) => c.copy(earlyAbort = v) 
         },
         opt("d", "genotype-decoder", "<"+KeywordNextFitDecoder+"|"+KeywordFirstFitDecoder+"|"+KeywordBestFitDecoder+">", "Decoder heuristic which translates the genotype of a individual to its"+iLF+"corresponding phenotype. "+defaultPrefix+KeywordBestFitDecoder+defaulSuffix){
           (v: String, c: Configuration) => v match {
