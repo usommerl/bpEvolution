@@ -7,7 +7,6 @@ case class Configuration(
   problem: BinPackProblem = null, 
   populationSize: Int = 500, 
   maxGenerations: Int = 1000,
-  parentSelectionImpact: Int = 3,
   parentSelection: Selection = TournamentSelection(), 
   recombination: Recombination = PartiallyMappedCrossover, 
   mutations: List[Mutation] = List(ShiftingMutation), 
@@ -30,9 +29,9 @@ case class Configuration(
   private val q1: Phenotype => Double = (phenotype: Phenotype) => phenotype.size.toDouble
     
   private val q2: Phenotype => Double = (phenotype: Phenotype) => {
-    val quotient = ( 0.0 /: phenotype ) ( (sum,bin) => sum + pow(bin.remainingCapacity, 2.0))
+    val dividend = ( 0.0 /: phenotype ) ( (sum,bin) => sum + pow(bin.remainingCapacity, 2.0))
       val divisor = pow(this.problem.binCapacity, 2.0) * this.problem.items.size
-    phenotype.size.toDouble + (quotient / divisor)
+    phenotype.size.toDouble + (dividend / divisor)
   }
 }
 
@@ -41,7 +40,7 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
       val iLF = "\n"++" "*8
       val defaultPrefix = "The default value is '"
       val defaulSuffix = "'"
-      val selectionValues = iLF ++ "Valid SELECTION keywords are: best|random|tournament=<INTEGER>"
+      val selectionValues = iLF ++ "Valid SELECTION keywords are: best|probabilistic|tournament=<INTEGER>"
       val KeywordBestFitDecoder = "best-fit"
       val KeywordFirstFitDecoder = "first-fit"
       val KeywordNextFitDecoder = "next-fit"
@@ -76,10 +75,11 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
           (v: String, c: Configuration) => val selection = getSelectionByKeyword(v)
             (selection: @unchecked) match { case Some(s) => c.copy(parentSelection = s) }
         },
-        opt("r", "recombination", "<ordered|mapped>", "Algorithm which recombines two parent individuals."){
+        opt("r", "recombination", "<ordered|mapped|random>", "Algorithm which recombines two parent individuals."){
           (v: String, c: Configuration) => v match {
             case "ordered" => c.copy(recombination = OrderedRecombination)
             case "mapped" => c.copy(recombination = PartiallyMappedCrossover)
+            case "random" => c.copy(recombination = RandomRecombinationAlgorithm)
           }
         },
         opt("m", "mutation", "<none|MUTATION{,MUTATION}>", "Algorithm which is used to mutate child individuals. If there is more than"+iLF+"one MUTATION specified, the algorithms will be applied in the defined order."+iLF+"Valid MUTATION keywords are: inversion|shift|exhange. "+defaultPrefix+"shift"+defaulSuffix){
@@ -110,7 +110,7 @@ object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
      val TournamentPattern = """(tournament)=(\d+)""".r
      keyword match {
         case "best" => Some(BestSelection)
-        case "random" => Some(RandomSelection)
+        case "probabilistic" => Some(ProbabilisticIndexSelection)
         case TournamentPattern(_,q) => Some(TournamentSelection(q.toInt))
         case _ => None
       }

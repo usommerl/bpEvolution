@@ -9,7 +9,6 @@ class Evolution(configuration: Configuration) extends Traversable[Population]{
   private val maxGenerations = configuration.maxGenerations
   private val genotypeDecoder = configuration.genotypeDecoder
   private val parentSelection = configuration.parentSelection
-  private val parentSelectionImpact = configuration.parentSelectionImpact
   private val recombination = configuration.recombination
   private val mutations = configuration.mutations
   private val environmentSelection = configuration.environmentSelection
@@ -18,7 +17,7 @@ class Evolution(configuration: Configuration) extends Traversable[Population]{
   def foreach[U](f: (Population) => U): Unit = {
     var population = initializePopulation(initialPopulationSize, problem)
     f(population)
-    while (population.generation <= maxGenerations &&
+    while (population.generation < maxGenerations &&
            population.best.quality.toInt > problem.theoreticalOptimum ) { 
       population = evolve(population)
       f(population)

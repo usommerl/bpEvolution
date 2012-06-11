@@ -10,7 +10,7 @@ object BestSelection extends Selection {
   }
 }
 
-object RandomSelection extends Selection {
+object ProbabilisticIndexSelection extends Selection {
   def select(individuals: List[Individual], quantity: Int): List[Individual] = {
     Random.shuffle(individuals).take(quantity)
   }

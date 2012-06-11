@@ -43,3 +43,13 @@ object PartiallyMappedCrossover extends Recombination {
     new Individual(childGenotype.toList, parentA.decoder, parentA.qualityFunction)
   }
 }
+
+object RandomRecombinationAlgorithm extends Recombination {
+  
+  val recombinations = List(OrderedRecombination,PartiallyMappedCrossover)
+  
+  def recombine(parentA: Individual, parentB: Individual): Individual = {
+      Random.shuffle(recombinations).head.recombine(parentA,parentB)  
+  }
+
+}

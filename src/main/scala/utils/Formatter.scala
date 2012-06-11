@@ -97,7 +97,7 @@ object Formatter {
     s match {
       case x if s.isInstanceOf[TournamentSelection] => 
       "tournament [q="+s.asInstanceOf[TournamentSelection].rounds+"]"
-      case x if (s == RandomSelection) => "random"
+      case x if (s == ProbabilisticIndexSelection) => "probabilistic"
       case x if (s == BestSelection) => "best"
       case _ => throw new Exception("Don't know how to format "+s.toString)
     }
@@ -106,6 +106,7 @@ object Formatter {
     r match {
       case x if (r == OrderedRecombination) => "ordered"
       case x if (r == PartiallyMappedCrossover) => "mapped"
+      case x if (r == RandomRecombinationAlgorithm) => "random algorithm"
       case _ => throw new Exception("Don't know how to format "+r.toString)
     }
 
