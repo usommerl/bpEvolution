@@ -3,3 +3,6 @@ target/
 *.*~
 main.pdf
 *.run.xml
+*-eps-converted-to.pdf
+doc/figures/*.eps
+doc/figures/*.tex

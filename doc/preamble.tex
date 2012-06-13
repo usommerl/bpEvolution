@@ -26,6 +26,10 @@
 \setlength{\parindent}{0mm}
 \setlength{\belowcaptionskip}{0em} 
 
+% usefull for printing lengths
+% \usepackage{layouts} 
+% example: \printinunitsof{cm} \prntlen{\textwidth}
+
 % color
 \usepackage{color,layout,float}
 \definecolor{htwk}{RGB}{35,71,160}
@@ -37,7 +41,7 @@
 \definecolor{darkgray}{RGB}{180,180,180}
 
 % encoding and language
-\usepackage[utf8]{inputenc}
+\usepackage[latin1]{inputenc}
 \usepackage[ngerman]{babel}
 
 % theorems
@@ -83,7 +87,8 @@
         breaklines           =true,
         breakautoindent      =false,
         tabsize              =4,
-        numbers              =none, 
+        numbers              =left,
+        numberstyle          =\scriptsize,
         frame                =single,
         framerule            =0pt,
         framesep             =.5em,
