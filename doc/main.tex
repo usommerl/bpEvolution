@@ -87,29 +87,33 @@ Da bei diesem Problem nur eine Dimension der zu verpackenden Objekte berücksicht
 Die Diversität ist ein Maß für die Vielfalt der Genotypen in einer Population. Zur Ermittlung dieses Maßes wird in der konkreten Umsetzung ein Hashwert von jedem Genotyp in der Population erzeugt. Der Hashwert von zwei Genotypen ist gleich, insofern diese die gleiche Permutation von Objekten verkörpern.
 In der praktischen Umsetzung wird die Diversität berechnet, indem die Anzahl der einzigartigen Hashwerte in der Population durch die Anzahl der Individuen dividiert und das Ergebnis anschließenden mit 100 multipliziert wird. Folglich drückt ein Diversitätswert von 100 aus, dass jeder Genotyp in der Population einzigartig ist. Umso stärker der errechnete Wert unterhalb von 100 liegt, desto mehr Duplikate eines odere mehrerer Genotypen existieren in der Population. Aufgrund von Hash-Kollisionen kann es in seltenen Fällen vorkommen, dass die tatsächliche Diversität größer ist, als durch das Verfahren berechnet wurde. In Ermangelung von alternativen Ansätzen wird dieser Fehler toleriert.
 
-   \subsection{Zyklus des evolutionären Algorithmus}
+    \subsection{Zyklus des evolutionären Algorithmus}
 
-\begin{lstlisting}[morekeywords={while,do,return,for}, escapechar=!, caption=Ablauf des evolutionären Algorithmus, label=lis:cycle]
-BEHÄLTER-ALGORITHMUS( Bewertungsfunktion !\textit{f}!, Recombination !\textit{r}!, 
-                      Elternselektion !\textit{s1}!, Umweltselektion !\textit{s2}!,
-                      Populationsgröße !$\lambda$!, Mutationen !\textit{M}! )
-!\textit{t}! !$\leftarrow$! 0
-!\textit{P(t)}! !$\leftarrow$! initialisiere Population mit !$\lambda$! Individuen
-bewerte alle Individuen aus !\textit{P(t)}! mit Bewertungsfunktion !\textit{f}!
-while Terminierungsbedingung nicht erfüllt
-do !$\ulcorner$\textit{P}$'$! !$\leftarrow$! selektiere !$\lambda$/3! Eltern aus !\textit{P(t)}! mit !\textit{s1}!
-    !\textit{P}$''$! !$\leftarrow$! erzeuge Nachkommen durch Rekombination !\textit{r}! aus !\textit{P}$'$!
-    for !\textit{m}! !$\in$! !\textit{M}! 
-    do !$\sqsubset$ \textit{P}$''$! !$\leftarrow$! mutiere die Individuen in !\textit{P}$''$! mit !\textit{m}!
-    bewerte alle Individuen aus !\textit{P}$''$! mit Bewertungsfunktion !\textit{f}!
-    !\textit{t}! !$\leftarrow$! !\textit{t}! + 1
-   !$\llcorner$\textit{P(t)}! !$\leftarrow$! selektiere !$\lambda$! Individuen aus !\textit{P}$''$\hspace{1mm}$\circ$! !\textit{P(t - 1)}! mit !\textit{s2}!
-return bestes Individuum aus !\textit{P(t)}!
+    In \autoref{lis:cycle} ist der Ablauf des gesamten evolutionären Algorithmus als Pseudocode dargestellt. Neben den dargestellten Parametern muss zusätzlich spezifiziert werden, welche Decodierungsfunktion alle Individuen verwenden sollen. Die Initialisierung der Population erfolgt, indem die Liste der einzusortierenden Objekte für jedes Individuum zufällig permutiert wird. Das Individuum bildet mittels der Decodierungsfunktion aus dem so entstandenen Genotyp den Phänotyp und kann anschließend mit der übergebenen Gütefunktion bewertet werden. Der Zyklus des Algorithmus terminiert, sobald ein Individuum gefunden wurde, das so viele Behälter verwendet wie theoretisch für die bearbeitete Probleminstanz minimal ist. Eine Diskussion zu der theoretisch minimal benötigten Anzahl an Behältern für eine Probleminstanz befindet sich in \autoref{sec:instances}. Als zusätzliche Terminierungsbedingung kann eine maximale Anzahl an Generationen festgelegt werden, die vom Algorithmus berechnet werden.
+
+\begin{lstlisting}[morekeywords={while,do,return,for}, escapechar=!, caption=Evolutionärer Behälter-Algorithmus, label=lis:cycle]
+ EA-BEHÄLTER-ALGORITHMUS( Bewertungsfunktion !$\xi$!, Recombination !$\delta$!, 
+                          Elternselektion !$\alpha_{1}$!, Umweltselektion !$\alpha_{2}$!,
+                          Populationsgröße !$\lambda$!, Mutationen !$\Upsilon$! )
+ !\textit{t}! !$\leftarrow$! 0
+ !\textit{P(t)}! !$\leftarrow$! initialisiere Population mit !$\lambda$! Individuen
+ bewerte alle Individuen aus !\textit{P(t)}! mit Bewertungsfunktion !$\xi$!
+ while Terminierungsbedingung nicht erfüllt
+ do !$\ulcorner$\textit{P}$'$! !$\leftarrow$! selektiere !$\lambda$/3! Eltern aus !\textit{P(t)}! mit !$\alpha_{1}$!
+     !\textit{P}$''$! !$\leftarrow$! erzeuge Nachkommen durch Rekombination !$\delta$! aus !\textit{P}$'$!
+     for !$\upsilon$! !$\in$! !$\Upsilon$! 
+     do !$\sqsubset$ \textit{P}$''$! !$\leftarrow$! mutiere die Individuen in !\textit{P}$''$! mit !$\upsilon$!
+     bewerte alle Individuen aus !\textit{P}$''$! mit Bewertungsfunktion !$\xi$!
+     !\textit{t}! !$\leftarrow$! !\textit{t}! + 1
+    !$\llcorner$\textit{P(t)}! !$\leftarrow$! selektiere !$\lambda$! Individuen aus !\textit{P}$''$\hspace{1mm}$\circ$! !\textit{P(t - 1)}! mit !$\alpha_{2}$!
+ return bestes Individuum aus !\textit{P(t)}!
 \end{lstlisting}
 
+Bei jedem Evolutionsschritt wird zunächst $\frac{1}{3}$ der Population mittels des spezifizierten Selektionsalgorithmus als Eltern ausgewählt. Aus den Eltern werden mithilfe des Rekombinationsalgorithmus Nachkommen erzeugt, wobei auf den Einsatz von Rekombinationswahrscheinlichkeiten verzichtet wurde. Für die Rekombination werden die Eltern in zufälliger Reihenfolge in eine zyklische Liste einsortiert. Anschließend vermehrt sich jeder Elter je einmal mit seinen direkten Nachbarn in der Liste. Insofern ein oder mehrere Mutationsalgorithmen spezifiziert wurden, werden diese in der angegebenen Reihenfolge auf jedes neu erzeugte Individuum angewendet. Am Ende des Evolutionsschritts wird eine Umweltselektion auf die neu erzeugten und sämtliche alten Individuen angewendet. Dadurch wird gewährleistet, dass die Populationsgröße stets konstant bleibt.
 
 
     \section{Bearbeitete Probleminstanzen}
+    \label{sec:instances}
     Für die praktische Analyse des entwickelten Algorithmus werden vorhandene Datensätze aus der \textit{Operations Research} (OR) Bibliothek\footnote{\url{http://people.brunel.ac.uk/~mastjjb/jeb/info.html}} von J. E. Beasley verwendet. Ursprünglich wurden diese Datensätze zur Untersuchung des \textit{Hybrid Grouping Genetic Algorithm} (HGGA) von E. Falkenauer konstruiert \parencite{Falkenauer:1996}. Die OR-Bibliothek stellt insgesamt acht Dateien mit 160 Instanzen des eindimensionalen Behälterproblems zur Verfügung. Diese wurden direkt in die Ressourcen der entwickelten Anwendung integriert, sodass alle Probleminstanzen komfortabel bearbeitet werden können. Bei den vorhandenen Datensätzen wird zwischen Problemen der Klasse \uniform und der Klasse \triplets unterschieden. Probleme der \uniform-Klasse bestehen aus Gegenständen mit einer gleichmäßig verteilten Größe zwischen 20 und 100 Einheiten. Diese müssen in Behälter mit einem Fassungsvermögen von 150 Einheiten einsortiert werden. Die Probleme der \triplets-Klasse enthalten Gegenstände mit einer Größe von 25 bis 50 Einheiten und die zu bestückenden Behälter besitzen ein Fassungsvermögen von 100 Einheiten. Aufgrund der Konstruktion der \triplets-Probleminstanzen, wird für einen gut gefüllten Behälter ein großer Gegenstand und zwei kleinere benötigt. Dabei muss der große Gegenstand mehr als die Hälfte des Fassungsvermögens des Behälters einnehmen. Die Intention bei der Entwicklung der \triplets-Klasse war die Erforschung der praktischen Grenzen von Falkenauers HGGA \parencite[17]{Falkenauer:1996}. Aus diesem Grund sind Probleminstanzen der \triplets-Klasse als komplexer einzustufen als Instanzen der \uniform-Klasse.
 
     Alle Probleminstanzen werden durch einen eindeutigen Identifikator gekennzeichnet. Probleme deren Identifikator mit einem '\texttt{u}' beginnt gehören zur \uniform-Klasse. Identifikatoren, die mit einem '\texttt{t}' beginnen, bezeichnen dagegen Probleme der \triplets-Klasse. Nach dem Buchstaben für die Klassenzugehörigkeit folgt die Anzahl der Gegenstände in der Probleminstanz und die Nummer des Problems. Für die \uniform-Klasse existieren jeweils zwanzig Probleme mit 120, 250, 500 und 1000 Gegenständen. Die Nummerierung beginnt für jede Problemgröße von neuem bei 0. Valide Identifikatoren für Probleme der \uniform-Klasse sind somit beispielsweise \texttt{u120\_00}, \texttt{u250\_00} oder \texttt{u500\_19}. Analog dazu existieren jeweils zwanzig Probleme mit 60, 120, 249 und 501 Gegenständen für die \triplets-Klasse. Der Aufbau der Identifikatoren ist mit denen der \uniform-Klasse identisch.
