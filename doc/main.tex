@@ -65,6 +65,7 @@ Da bei diesem Problem nur eine Dimension der zu verpackenden Objekte berücksicht
     \end{itemize}
 
     \subsection{Bewertungsfunktionen}
+    \label{subsec:qualityfunction}
     Die eigentliche Optimierung durch den evolutionären Algorithmus erfolgt auf Basis der Güte der einzelnen Lösungskandidaten. Die Güte eines Individuums gibt an wie gut bzw. wie schlecht das Individuum das jeweilige Problem löst. Entscheidend ist der durch eine Bewertungsfunktion ermittelte Gütewert vor allem für die Selektionsoperatoren des Algorithmus. Während der praktischen Untersuchungen wurde mit zwei verschiedenen Bewertungsfunktionen $q_1$ und $q_2$ gearbeitet. Je kleiner der Funktionswert dieser Bewertungsfunktionen ist, desto besser ist die durch das Individuum repräsentierte Lösung. Die relativ einfache Bewertungsfunktion $q_1$ ermittelt lediglich die Anzahl der benötigten Behälter $k$ für ein beliebiges Individuum $x$.
     $$q_1(x) = x.k$$
     Die Bewertungsfunktion $q_2$ berücksichtigt neben der Anzahl der benötigten Behälter auch das von jedem Behälter $b_i$ nicht genutzte Fassungsvermögen $r$. Dabei bezeichnet $c$ das Gesamtfassungsvermögen eines Behälters und $n$ die Anzahl der Objekte in der Probleminstanz. Durch die Funktion $q_2$ werden die Individuen der Population besser bewertet, die das Fassungsvermögen der von ihnen genutzten Behälter möglichst effizient ausnutzen. 
@@ -123,6 +124,7 @@ Bei jedem Evolutionsschritt wird zunächst $\frac{1}{3}$ der Population mittels d
 Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theoretisch optimale Lösung für alle Instanzen außer \texttt{u120\_08}, \texttt{u120\_19}, \texttt{u250\_07}, \texttt{u250\_12}, \texttt{u250\_13}, \texttt{t60\_07} und \texttt{t60\_18} auch praktisch ermittelt werden. Für die eben genannten Instanzen wurde dagegen eine Lösung gefunden, die jeweils einen Behälter mehr benötigt als die theoretische minimale Lösung. \parencite[19-22]{Falkenauer:1996} 
     
     \section{Untersuchung des entwickelten Algorithmus}
+    \label{sec:evaluation}
     
     \subsection{Vergleich der Decodierungsfunktionen}
 
@@ -157,7 +159,7 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
         \label{plt:mutations02}
     \end{figure}
 
-    \subsection{Vergleich der Recombinationsalgorithmen}
+    \subsection{Vergleich der Rekombinationsalgorithmen}
 
     Beim Experiment zur Untersuchung der Rekombinationsverfahren wurde analog zur Untersuchung der Mutationsoperatoren vorgegangen (vgl. \autoref{subsec:mutation-comparison}). Diesmal wurde die Probleminstanz \texttt{u120\_15} bearbeitet und statt des Algorithmus für die Mutation ausschließlich der verwendete Rekombinationsalgorithmus variiert. Das Ergebnis des Vergleichs ist in \autoref{plt:recombinations} dargestellt. In der Abbildung wird deutlich, dass die Ermittlung einer minimalen Lösung unter Verwendung der Ordnungsrekombination wesentlich länger dauerte als mit der Abbildungsrekombination und nur in 73\% der Testläufe überhaupt erfolgreich war.
 
@@ -169,6 +171,12 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     \end{figure}
 
     Während der Untersuchungen wurde noch ein weiterer Rekombinationsoperator entwickelt, der bei jeder Anwendung zufällig entweder eine Abbildungsrekombination oder eine Ordnungsrekombination durchführt. Dieser Ansatz erwies sich im Mittel am effektivsten, wobei der Unterschied zur Abbildungsrekombination nicht signifikant ist.
+
+    \subsection{Vergleich der Bewertungsfunktionen}
+    Die in \autoref{subsec:qualityfunction} vorgestellten Bewertungsfunktionen $q_1$ und $q_2$ wurden anhand von Probleminstanz \texttt{u120\_13} untersucht. Im Unterschied zu den vorangegangenen Experimenten wurden diesmal jeweils 21 Testläufe pro Bewertungsfunktion durchgeführt. Bis auf die Einstellung der Bewertungsfunktion entsprachen alle Parameter der am Anfang von \autoref{sec:evaluation} vorgestellten Standardkonfiguration. 
+    
+    Unter Verwendung der Funktion $q_1$ konnte in allen 21 Testläufen eine minimale Lösung ermittelt werden. Der Median der benötigten Generation bis zum Auffinden dieser Lösung lag bei 101 Generationen. Im Gegensatz dazu konnte mithilfe der Bewertungsfunktion $q_2$ in keinem Testlauf eine Behälterbelegung errechnet werden, die dem theoretischem Optimum von 49 Behältern entspricht. Da sich die Population bei der Verwendung von $q_2$ in Richtung des Optimums entwickelte, kann ein grundsätzlicher Implementierungsfehler ausgeschlossen werden. Am Ende eines Testlaufs mit der Funktion $q_2$ lag die Anzahl der benötigten Behälter in der Regel ein Behälter über dem theoretischen Optimum. Es ist daher zu vermuten, dass die Funktion ungeeignet ist, sobald nur noch sehr wenig Platz in allen verwendeten Behältern verfügbar ist.   
+    
 
     \clearpage
     \pagestyle{empty}
