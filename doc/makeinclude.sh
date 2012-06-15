@@ -1,7 +1,7 @@
 !/bin/bash
 
 DOCDIR=$(pwd)
-TESTDIR=../tests
+TESTDIR=../evaluation
 
 cd $TESTDIR
 for file in *.plt

@@ -136,6 +136,7 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     In \autoref{plt:decfunc} wurden diese drei Datensätze exemplarisch gegenübergestellt. Das Diagramm verdeutlicht, wie stark der Decodierungsalgorithmus den Phänotyp des Individuums und letztendlich die Effizienz des gesamten Algorithmus beeinflusst. Die evolutionäre Suche unter Verwendung der \bestfit-Heuristik nähert sich in der Gegenüberstellung deutlich schneller der unteren Grenze der benötigten Behälter ($k_{min}$) an. Dagegen führt die Suche mit der \nextfit- und \firstfit-Heuristik in den Tests erst sehr viel später oder häufig auch überhaupt nicht zu einer minimalen Lösung.
 
     \subsection{Vergleich der Mutationsoperatoren}
+    \label{subsec:mutation-comparison}
     Um die Mutationsalgorithmen zu vergleichen, wurde die Probleminstanz \texttt{u120\_02} unter Verwendung der implementierten Algorithmen jeweils 11-mal bearbeitet. Im Anschluss wurde bei allen Testläufen ermittelt, in welcher Generation ein Individuum gefunden wurde, das einer theoretisch minimalen Lösung entspricht. Von diesen Werten wurde für jeden Algorithmus der Median gebildet und zum Vergleich der Mutationsverfahren verwendet. Konnte in einem Test keine minimale Lösung gefunden werden, wurde der Wert des Testlaufs auf $\infty$ gesetzt. Der Vergleich auf Basis der Generation wurde gewählt, da dabei die unterschiedlichen Laufzeiten der Mutationsalgorithmen keinen Einfluss haben.    
 
     \begin{figure}[h]
@@ -155,6 +156,19 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
         \caption{Entwicklung der Diversität mit und ohne Mutationsoperator} 
         \label{plt:mutations02}
     \end{figure}
+
+    \subsection{Vergleich der Recombinationsalgorithmen}
+
+    Beim Experiment zur Untersuchung der Rekombinationsverfahren wurde analog zur Untersuchung der Mutationsoperatoren vorgegangen (vgl. \autoref{subsec:mutation-comparison}). Diesmal wurde die Probleminstanz \texttt{u120\_15} bearbeitet und statt des Algorithmus für die Mutation ausschließlich der verwendete Rekombinationsalgorithmus variiert. Das Ergebnis des Vergleichs ist in \autoref{plt:recombinations} dargestellt. In der Abbildung wird deutlich, dass die Ermittlung einer minimalen Lösung unter Verwendung der Ordnungsrekombination wesentlich länger dauerte als mit der Abbildungsrekombination und nur in 73\% der Testläufe überhaupt erfolgreich war.
+
+    \begin{figure}[h]
+        \center
+        \input{figures/test-recombinations}
+        \caption{Gegenüberstellung verschiedener Recombinationsalgorithmen} 
+        \label{plt:recombinations}
+    \end{figure}
+
+    Während der Untersuchungen wurde noch ein weiterer Rekombinationsoperator entwickelt, der bei jeder Anwendung zufällig entweder eine Abbildungsrekombination oder eine Ordnungsrekombination durchführt. Dieser Ansatz erwies sich im Mittel am effektivsten, wobei der Unterschied zur Abbildungsrekombination nicht signifikant ist.
 
     \clearpage
     \pagestyle{empty}

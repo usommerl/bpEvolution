@@ -42,7 +42,7 @@ set label '\footnotesize{11/11}' at -0.041,419
 set label '\footnotesize{8/11}' at 0.135,951
 set label '\footnotesize{10/11}' at 0.29,472
 
-plot 'data/test_mutations_combined_runtimes.dat' using 1 ls 1 title '\footnotesize{keine Mutation}', \
+plot 'data/test_mutations_combined.dat' using 1 ls 1 title '\footnotesize{keine Mutation}', \
                                               '' using 2 ls 2 title '\footnotesize{Verschiebende-Mutation}', \
                                               '' using 3 ls 3 title '\footnotesize{Vertauschende-Mutation}', \
                                               '' using 4 ls 4 title '\footnotesize{Invertierende-Mutation}', \
