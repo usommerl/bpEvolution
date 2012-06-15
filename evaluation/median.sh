@@ -17,6 +17,7 @@ done
 echo -ne $LINES | sort
 echo
 
-idx=$(awk 'BEGIN { rounded = sprintf("%.0f",'$NUMBEROFFILES'/2); print rounded }')
-MEDIAN=$(echo -ne $LINES | sort | sed -n "${idx}p")
+float=$(echo "scale=2;$NUMBEROFFILES/2" | bc)
+idx=$(echo "($float+0.5)/1" | bc)
+MEDIAN=$(echo -ne $LINES | sort | sed -n "$idx"p)
 echo "MEDIAN: "${MEDIAN}
