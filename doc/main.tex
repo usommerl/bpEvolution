@@ -1,4 +1,5 @@
-\newcommand{\KEYWORDS}{Evolution\"are Algorithmen, one-dimensional bin packing}
+\newcommand{\KEYWORDS}{Evolution\"are Algorithmen, eindimensionalen Behälter-
+problem, one-dimensional bin packing, Hybrid Genetic Grouping Algorithm, HGGA}
 \newcommand{\TITLE}{Entwicklung eines evolution\"aren Algorithmus zur Bearbeitung des eindimensionalen Beh\"alterproblems}
 \newcommand{\SUBTITLE}{Projektarbeit Evolution\"are Algorithmen SS 2012}
 \newcommand{\INSTITUTE}{Hochschule f\"ur Technik, Wirtschaft und Kultur Leipzig}
@@ -34,7 +35,7 @@
         %\vspace{-0.4em}
         \normalsize
         \setstretch{1.2}
-        \textbf{Schlüsselwörter: }\KEYWORDS
+        %\textbf{Schlüsselwörter: }\KEYWORDS
         \par
         %\textbf{Kurzfassung: }\SUBJECT  
     \end{titlepage}
@@ -92,10 +93,10 @@ In der praktischen Umsetzung wird die Diversität berechnet, indem die Anzahl der
 
     In \autoref{lis:cycle} ist der Ablauf des gesamten evolutionären Algorithmus als Pseudocode dargestellt. Neben den dargestellten Parametern muss zusätzlich spezifiziert werden, welche Decodierungsfunktion alle Individuen verwenden sollen. Die Initialisierung der Population erfolgt, indem die Liste der einzusortierenden Objekte für jedes Individuum zufällig permutiert wird. Das Individuum bildet mittels der Decodierungsfunktion aus dem so entstandenen Genotyp den Phänotyp und kann anschließend mit der übergebenen Gütefunktion bewertet werden. Der Zyklus des Algorithmus terminiert, sobald ein Individuum gefunden wurde, das so viele Behälter verwendet wie theoretisch für die bearbeitete Probleminstanz minimal ist. Eine Diskussion zu der theoretisch minimal benötigten Anzahl an Behältern für eine Probleminstanz befindet sich in \autoref{sec:instances}. Als zusätzliche Terminierungsbedingung kann eine maximale Anzahl an Generationen festgelegt werden, die vom Algorithmus berechnet werden.
 
-\begin{lstlisting}[morekeywords={while,do,return,for}, escapechar=!, caption=Evolutionärer Behälter-Algorithmus, label=lis:cycle]
- EA-BEHÄLTER-ALGORITHMUS( Bewertungsfunktion !$\xi$!, Recombination !$\delta$!, 
-                          Elternselektion !$\alpha_{1}$!, Umweltselektion !$\alpha_{2}$!,
-                          Populationsgröße !$\lambda$!, Mutationen !$\Upsilon$! )
+\begin{lstlisting}[morekeywords={while,do,return,for}, escapechar=!, caption=Evolutionärer Bin-Packing-Algorithmus, label=lis:cycle]
+ EA-BIN-PACKING( Bewertungsfunktion !$\xi$!, Recombination !$\delta$!, 
+                 Elternselektion !$\alpha_{1}$!, Umweltselektion !$\alpha_{2}$!,
+                 Populationsgröße !$\lambda$!, Mutationen !$\Upsilon$! )
  !\textit{t}! !$\leftarrow$! 0
  !\textit{P(t)}! !$\leftarrow$! initialisiere Population mit !$\lambda$! Individuen
  bewerte alle Individuen aus !\textit{P(t)}! mit Bewertungsfunktion !$\xi$!
@@ -115,7 +116,7 @@ Bei jedem Evolutionsschritt wird zunächst $\frac{1}{3}$ der Population mittels d
 
     \section{Bearbeitete Probleminstanzen}
     \label{sec:instances}
-    Für die praktische Analyse des entwickelten Algorithmus werden vorhandene Datensätze aus der \textit{Operations Research} (OR) Bibliothek\footnote{\url{http://people.brunel.ac.uk/~mastjjb/jeb/info.html}} von J. E. Beasley verwendet. Ursprünglich wurden diese Datensätze zur Untersuchung des \textit{Hybrid Grouping Genetic Algorithm} (HGGA) von E. Falkenauer konstruiert \parencite{Falkenauer:1996}. Die OR-Bibliothek stellt insgesamt acht Dateien mit 160 Instanzen des eindimensionalen Behälterproblems zur Verfügung. Diese wurden direkt in die Ressourcen der entwickelten Anwendung integriert, sodass alle Probleminstanzen komfortabel bearbeitet werden können. Bei den vorhandenen Datensätzen wird zwischen Problemen der Klasse \uniform und der Klasse \triplets unterschieden. Probleme der \uniform-Klasse bestehen aus Gegenständen mit einer gleichmäßig verteilten Größe zwischen 20 und 100 Einheiten. Diese müssen in Behälter mit einem Fassungsvermögen von 150 Einheiten einsortiert werden. Die Probleme der \triplets-Klasse enthalten Gegenstände mit einer Größe von 25 bis 50 Einheiten und die zu bestückenden Behälter besitzen ein Fassungsvermögen von 100 Einheiten. Aufgrund der Konstruktion der \triplets-Probleminstanzen, wird für einen gut gefüllten Behälter ein großer Gegenstand und zwei kleinere benötigt. Dabei muss der große Gegenstand mehr als die Hälfte des Fassungsvermögens des Behälters einnehmen. Die Intention bei der Entwicklung der \triplets-Klasse war die Erforschung der praktischen Grenzen von Falkenauers HGGA \parencite[17]{Falkenauer:1996}. Aus diesem Grund sind Probleminstanzen der \triplets-Klasse als komplexer einzustufen als Instanzen der \uniform-Klasse.
+    Für die praktische Analyse des entwickelten Algorithmus werden vorhandene Datensätze aus der \textit{Operations Research} (OR) Bibliothek\footnote{\url{http://people.brunel.ac.uk/~mastjjb/jeb/info.html}} von J. E. Beasley verwendet. Ursprünglich wurden diese Datensätze zur Untersuchung des \textit{Hybrid Grouping Genetic Algorithm} (HGGA) von Emanuel Falkenauer konstruiert \parencite{Falkenauer:1996}. Die OR-Bibliothek stellt insgesamt acht Dateien mit 160 Instanzen des eindimensionalen Behälterproblems zur Verfügung. Diese wurden direkt in die Ressourcen der entwickelten Anwendung integriert, sodass alle Probleminstanzen komfortabel bearbeitet werden können. Bei den vorhandenen Datensätzen wird zwischen Problemen der Klasse \uniform und der Klasse \triplets unterschieden. Probleme der \uniform-Klasse bestehen aus Gegenständen mit einer gleichmäßig verteilten Größe zwischen 20 und 100 Einheiten. Diese müssen in Behälter mit einem Fassungsvermögen von 150 Einheiten einsortiert werden. Die Probleme der \triplets-Klasse enthalten Gegenstände mit einer Größe von 25 bis 50 Einheiten und die zu bestückenden Behälter besitzen ein Fassungsvermögen von 100 Einheiten. Aufgrund der Konstruktion der \triplets-Probleminstanzen, wird für einen gut gefüllten Behälter ein großer Gegenstand und zwei kleinere benötigt. Dabei muss der große Gegenstand mehr als die Hälfte des Fassungsvermögens des Behälters einnehmen. Die Intention bei der Entwicklung der \triplets-Klasse war die Erforschung der praktischen Grenzen von Falkenauers HGGA \parencite[17]{Falkenauer:1996}. Aus diesem Grund sind Probleminstanzen der \triplets-Klasse als komplexer einzustufen als Instanzen der \uniform-Klasse.
 
     Alle Probleminstanzen werden durch einen eindeutigen Identifikator gekennzeichnet. Probleme deren Identifikator mit einem '\texttt{u}' beginnt gehören zur \uniform-Klasse. Identifikatoren, die mit einem '\texttt{t}' beginnen, bezeichnen dagegen Probleme der \triplets-Klasse. Nach dem Buchstaben für die Klassenzugehörigkeit folgt die Anzahl der Gegenstände in der Probleminstanz und die Nummer des Problems. Für die \uniform-Klasse existieren jeweils zwanzig Probleme mit 120, 250, 500 und 1000 Gegenständen. Die Nummerierung beginnt für jede Problemgröße von neuem bei 0. Valide Identifikatoren für Probleme der \uniform-Klasse sind somit beispielsweise \texttt{u120\_00}, \texttt{u250\_00} oder \texttt{u500\_19}. Analog dazu existieren jeweils zwanzig Probleme mit 60, 120, 249 und 501 Gegenständen für die \triplets-Klasse. Der Aufbau der Identifikatoren ist mit denen der \uniform-Klasse identisch.
 
@@ -160,6 +161,7 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     \end{figure}
 
     \subsection{Vergleich der Rekombinationsalgorithmen}
+    \label{subsec:recombinations}
 
     Beim Experiment zur Untersuchung der Rekombinationsverfahren wurde analog zur Untersuchung der Mutationsoperatoren vorgegangen (vgl. \autoref{subsec:mutation-comparison}). Diesmal wurde die Probleminstanz \texttt{u120\_15} bearbeitet und statt des Algorithmus für die Mutation ausschließlich der verwendete Rekombinationsalgorithmus variiert. Das Ergebnis des Vergleichs ist in \autoref{plt:recombinations} dargestellt. In der Abbildung wird deutlich, dass die Ermittlung einer minimalen Lösung unter Verwendung der Ordnungsrekombination wesentlich länger dauerte als mit der Abbildungsrekombination und nur in 73\% der Testläufe überhaupt erfolgreich war.
 
@@ -175,8 +177,28 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     \subsection{Vergleich der Bewertungsfunktionen}
     Die in \autoref{subsec:qualityfunction} vorgestellten Bewertungsfunktionen $q_1$ und $q_2$ wurden anhand von Probleminstanz \texttt{u120\_13} untersucht. Im Unterschied zu den vorangegangenen Experimenten wurden diesmal jeweils 21 Testläufe pro Bewertungsfunktion durchgeführt. Bis auf die Einstellung der Bewertungsfunktion entsprachen alle Parameter der am Anfang von \autoref{sec:evaluation} vorgestellten Standardkonfiguration. 
     
-    Unter Verwendung der Funktion $q_1$ konnte in allen 21 Testläufen eine minimale Lösung ermittelt werden. Der Median der benötigten Generation bis zum Auffinden dieser Lösung lag bei 101 Generationen. Im Gegensatz dazu konnte mithilfe der Bewertungsfunktion $q_2$ in keinem Testlauf eine Behälterbelegung errechnet werden, die dem theoretischem Optimum von 49 Behältern entspricht. Da sich die Population bei der Verwendung von $q_2$ in Richtung des Optimums entwickelte, kann ein grundsätzlicher Implementierungsfehler ausgeschlossen werden. Am Ende eines Testlaufs mit der Funktion $q_2$ lag die Anzahl der benötigten Behälter in der Regel ein Behälter über dem theoretischen Optimum. Es ist daher zu vermuten, dass die Funktion ungeeignet ist, sobald nur noch sehr wenig Platz in allen verwendeten Behältern verfügbar ist.   
+    Unter Verwendung der Funktion $q_1$ konnte in allen 21 Testläufen eine minimale Lösung ermittelt werden. Der Median der benötigten Generation bis zum Auffinden dieser Lösung lag bei 101 Generationen. Im Gegensatz dazu konnte mithilfe der Bewertungsfunktion $q_2$ in keinem Testlauf eine Behälterbelegung errechnet werden, die dem theoretischen Optimum von 49 Behältern entspricht. Da sich die Population bei der Verwendung von $q_2$ in Richtung des Optimums entwickelte, kann ein grundsätzlicher Implementierungsfehler ausgeschlossen werden. Am Ende eines Testlaufs mit der Funktion $q_2$ lag die Anzahl der benötigten Behälter in der Regel ein Behälter über dem theoretischen Optimum. Es ist daher zu vermuten, dass die Funktion ungeeignet ist, sobald nur noch sehr wenig Platz in allen verwendeten Behältern verfügbar ist.   
+
+    \subsection{Laufzeitvergleich mit dem \textit{Hybrid Genetic Grouping Algorithm}}
+
+    Zum Abschluss der Untersuchungen trat der entwickelte evolutionäre Bin-Packing-Algorithmus (EBPA) in einem Laufzeitvergleich gegen den \textit{Hybrid Genetic Grouping Algorithm} (HGGA) an. Die für den HGGA erforderlichen Messwerte wurden dem Anhang von \parencite{Falkenauer:1996} entnommen. Aufgrund der Erkenntnisse aus den vorangegangenen Versuchen wurde die Standardkonfiguration des EBPA dahin gehend verändert, dass bei der Rekombination nun zufällig einer der beiden verfügbaren Algorithmen ausgewählt wird (siehe \autoref{subsec:recombinations}). Für den Vergleich wurden insgesamt 40 Probleminstanzen jeweils einmal mit dem EBPA bearbeitet. Es handelte sich dabei um 20 Instanzen der \uniform-Klasse mit 120 Objekten und um 20 Instanzen der \triplets-Klasse mit 60 Objekten. 
     
+    \begin{figure}[h]
+        \center
+        \input{figures/test-comparison-u120}
+        \caption{Laufzeitvergleich anhand von Probleminstanzen der \uniform-Klasse} 
+        \label{plt:comparison-u120}
+    \end{figure}
+
+    Die ermittelten Ergebnisse sind getrennt nach Problemklasse in den Abbildungen \ref{plt:comparison-u120} und \ref{plt:comparison-t60} dargestellt. Die Laufzeiten geben an, wie lange das Berechnen einer minimale Lösung in Anspruch nahm. Gelang dies einem oder beiden Algorithmen bei einer Probleminstanz nicht, wurde das Ergebnis für diese Instanz nicht in das Diagramm übernommen. Bezüglich der bearbeiteten Probleme der \uniform-Klasse fand der HGGA bei 18 von 20 Instanzen eine minimale Lösung und der EBPA bei 14 von 20. Neben der höheren Zuverlässigkeit hinsichtlich des Auffindens einer optimalen Lösung war der HGGA bei dieser Klasse von Problemen auch in Bezug auf die Laufzeit deutlich überlegen. In den Tests mit den Problemen der \triplets-Klasse berechnete der HGGA dagegen lediglich einmal eine Lösung schneller als der EBPA. Allerdings konnte der EBPA nur bei 10 von 20 Instanzen eine minimale Lösung finden, wogegen der HGGA bei 18 von 20 Instanzen die Berechnung mit einer optimalen Lösung beendete.     
+    
+    \begin{figure}[h]
+        \center
+        \input{figures/test-comparison-t60}
+        \caption{Laufzeitvergleich anhand von Probleminstanzen der \triplets-Klasse} 
+        \label{plt:comparison-t60}
+    \end{figure}
+
 
     \clearpage
     \pagestyle{empty}
