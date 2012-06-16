@@ -23,13 +23,13 @@ object Main {
       var bestIndividual: Individual = null
       formatConfiguration(configuration).foreach{ line => output(line) }
       val evolution = new Evolution(configuration)
-      val stopWatch = new StopWatch(StopWatch.Precision.SECONDS)
+      val stopWatch = new StopWatch(StopWatch.Precision.MILLISECONDS)
       stopWatch.start()
       for (population <- evolution) {
         formatPopulation(population, configuration).foreach{ line => output(line) }
         bestIndividual = population.best
       }
-      output("\n# Total time: "+stopWatch.stop()+" s")
+      output( ("\n# Total time: %.1f s").format(stopWatch.stop()/1000.0) )
       formatResult(bestIndividual).foreach{ line => outputToFile(line) }
       println()
     } 
