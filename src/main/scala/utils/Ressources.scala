@@ -7,9 +7,9 @@ object Ressources {
   lazy val ProblemInstances = loadProblemInstances()
 
   private def loadProblemInstances(): Map[String, BinPackProblem] = {
-    val resourceDirectory = new File(getClass.getResource(".").toURI())
-      val filenamesProblems = resourceDirectory.list().filter(_.matches("binpack\\d*\\.txt"))
-      val problemBuffer = new ListBuffer[BinPackProblem]
+    val filenamesProblems = new ListBuffer[String]
+    (1 to 8).foreach(i => filenamesProblems += ("binpack%d.txt").format(i))
+    val problemBuffer = new ListBuffer[BinPackProblem]
     filenamesProblems.foreach(name => problemBuffer ++= readResource(name))
     problemBuffer.map(problem => (problem.id, problem)).toMap
   }
