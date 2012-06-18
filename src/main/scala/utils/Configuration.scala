@@ -35,7 +35,7 @@ case class Configuration(
   }
 }
 
-object ConfigurationParser extends OptionParser[Configuration]("bpEvolver") {
+object ConfigurationParser extends OptionParser[Configuration]("bpEvolution") {
 
       val iLF = "\n"++" "*8
       val defaultPrefix = "The default value is '"

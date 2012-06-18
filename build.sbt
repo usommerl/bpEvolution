@@ -2,7 +2,7 @@ import AssemblyKeys._
 
 assemblySettings
 
-name := "bpEvolver"
+name := "bpEvolution"
 
 version := "0.1"
 
