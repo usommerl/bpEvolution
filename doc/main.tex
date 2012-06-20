@@ -50,7 +50,7 @@ problem, one-dimensional bin packing, Hybrid Genetic Grouping Algorithm, HGGA}
 Da bei diesem Problem nur eine Dimension der zu verpackenden Objekte berücksichtigt wird, kann es auch als eindimensionales Zuschnittproblem (\textit{one-dimensional cutting stock problem}) betrachtet werden. \parencite[485]{KorteVygen:2008}
     
     \section{Beschreibung des entwickelten Algorithmus}
-    Das entwickelte Programm zur Bearbeitung des eindimensionalen Behälterproblems wurde so gestaltet, dass sich verschiedene Teilaspekte des evolutionären Algorithmus über Parameter verändern lassen. Dadurch wird eine gezielte Untersuchung der Effektivität von unterschiedlichen Konfigurationen ermöglicht. In diesem Abschnitt sollen zunächst die einzelnen Teile des Algorithmus, wie z.B. der Aufbau des Individuums oder verschiedene Dekodierungsfunktionen, erläutert werden. Das Zusammenwirken der unterschiedlichen Komponenten im evolutionären Zyklus wird ganz am Ende des Abschnitts erörtert. 
+    Das entwickelte Programm zur Bearbeitung des eindimensionalen Behälterproblems wurde so gestaltet, dass sich verschiedene Teilaspekte des evolutionären Algorithmus über Parameter verändern lassen. Dadurch wird eine gezielte Untersuchung der Effektivität von unterschiedlichen Konfigurationen ermöglicht. In diesem Abschnitt sollen zunächst die einzelnen Teile des Algorithmus, wie z.B. der Aufbau des Individuums oder verschiedene Dekodierungsfunktionen, erläutert werden. Das Zusammenwirken der unterschiedlichen Komponenten im evolutionären Zyklus wird ganz am Ende des Abschnitts erörtert. Der Quellcode der gesamten Anwendung kann über ein öffentliches Repository\footnote{\url{https://bitbucket.org/usommerl/bpevolution}} abgerufen werden. 
     
     \subsection{Genotyp und Phänotyp}
     Um Methoden der evolutionären Algorithmik auf das in \autoref{sec:problem} beschriebene Problem anwenden zu können, muss zunächst eine geeignete Repräsentation für alle Lösungskandidaten des Problems modelliert werden. Diese auch als Individuum bezeichnete Repräsentation besteht aus dem Genotyp und dem Phänotyp. Der Genotyp ist das Erbgut des Individuums und stellt seinen spezifischen Satz von Genen dar. In der hier vorgestellten Implementierung ist ein Gen genau ein Objekt aus einer Instanz des Behälterproblems. Dementsprechend ist der Genotyp eine Permutation aller Objekte in der Probleminstanz. Der Phänotyp ist das Erscheinungsbild bzw. die Menge aller äußeren Merkmale des Individuums und wird im Wesentlichen durch den Genotyp bestimmt. In der konkreten Umsetzung ist der Phänotyp daher eine eindeutige Zuordnung der Objekte im Genotyp zu einem Behälter. Die Translation des Genotyps in den zugehörigen Phänotyp wird durch eine Decodierungsfunktion definiert. 
@@ -114,7 +114,7 @@ In der praktischen Umsetzung wird die Diversität berechnet, indem die Anzahl der
 Bei jedem Evolutionsschritt wird zunächst $\frac{1}{3}$ der Population mittels des spezifizierten Selektionsalgorithmus als Eltern ausgewählt. Aus den Eltern werden mithilfe des Rekombinationsalgorithmus Nachkommen erzeugt, wobei auf den Einsatz von Rekombinationswahrscheinlichkeiten verzichtet wurde. Für die Rekombination werden die Eltern in zufälliger Reihenfolge in eine zyklische Liste einsortiert. Anschließend vermehrt sich jeder Elter je einmal mit seinen direkten Nachbarn in der Liste. Insofern ein oder mehrere Mutationsalgorithmen spezifiziert wurden, werden diese in der angegebenen Reihenfolge auf jedes neu erzeugte Individuum angewendet. Am Ende des Evolutionsschritts wird eine Umweltselektion auf die neu erzeugten und sämtliche alten Individuen angewendet. Dadurch wird gewährleistet, dass die Populationsgröße stets konstant bleibt.
 
 
-    \section{Bearbeitete Probleminstanzen}
+    \section{Probleminstanzen}
     \label{sec:instances}
     Für die praktische Analyse des entwickelten Algorithmus werden vorhandene Datensätze aus der \textit{Operations Research} (OR) Bibliothek\footnote{\url{http://people.brunel.ac.uk/~mastjjb/jeb/info.html}} von J. E. Beasley verwendet. Ursprünglich wurden diese Datensätze zur Untersuchung des \textit{Hybrid Grouping Genetic Algorithm} (HGGA) von Emanuel Falkenauer konstruiert \parencite{Falkenauer:1996}. Die OR-Bibliothek stellt insgesamt acht Dateien mit 160 Instanzen des eindimensionalen Behälterproblems zur Verfügung. Diese wurden direkt in die Ressourcen der entwickelten Anwendung integriert, sodass alle Probleminstanzen komfortabel bearbeitet werden können. Bei den vorhandenen Datensätzen wird zwischen Problemen der Klasse \uniform und der Klasse \triplets unterschieden. Probleme der \uniform-Klasse bestehen aus Gegenständen mit einer gleichmäßig verteilten Größe zwischen 20 und 100 Einheiten. Diese müssen in Behälter mit einem Fassungsvermögen von 150 Einheiten einsortiert werden. Die Probleme der \triplets-Klasse enthalten Gegenstände mit einer Größe von 25 bis 50 Einheiten und die zu bestückenden Behälter besitzen ein Fassungsvermögen von 100 Einheiten. Aufgrund der Konstruktion der \triplets-Probleminstanzen, wird für einen gut gefüllten Behälter ein großer Gegenstand und zwei kleinere benötigt. Dabei muss der große Gegenstand mehr als die Hälfte des Fassungsvermögens des Behälters einnehmen. Die Intention bei der Entwicklung der \triplets-Klasse war die Erforschung der praktischen Grenzen von Falkenauers HGGA \parencite[17]{Falkenauer:1996}. Aus diesem Grund sind Probleminstanzen der \triplets-Klasse als komplexer einzustufen als Instanzen der \uniform-Klasse.
 
@@ -126,8 +126,22 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     
     \section{Untersuchung des entwickelten Algorithmus}
     \label{sec:evaluation}
-    
+
+    Das primäre Ziel bei der Untersuchung des Algorithmus war die Ermittlung einer sinnvollen Konfiguration zur effektiven Bearbeitung der in \autoref{sec:instances} beschriebenen Probleminstanzen. Zu diesem Zweck wurde die in \autoref{lis:config} abgebildete Standardkonfiguration festgelegt. Sämtliche in den Abschnitten \ref{subsec:test-decfunc} bis \ref{subsec:test-qualfunc} beschriebenen Experimente nutzen diese Konfiguration und variieren ausschließlich die Einstellung des jeweils untersuchten Parameters. 
+    \newpage
+    \begin{lstlisting}[morekeywords={}, escapechar=!, caption=Standardkonfiguration für die Evaluierungsexperimente, label=lis:config]
+ !$\textbf{Populationsgröße}$!      !$\leftarrow$!  !$\textit{500}$!
+ !$\textbf{Decodierungsfunktion}$!  !$\leftarrow$!  !$\textit{Best-Fit}$!  
+ !$\textbf{Bewertungsfunktion}$!    !$\leftarrow$!  !$q_1$! 
+ !$\textbf{Elternselektion}$!       !$\leftarrow$!  !$\textit{Besten-Selektion}$!  
+ !$\textbf{Rekombination}$!         !$\leftarrow$!  !$\textit{Abbildungsrekombination}$! 
+ !$\textbf{Mutation}$!              !$\leftarrow$!  !$\textit{Verschiebende-Mutation}$!
+ !$\textbf{Umweltselektion}$!       !$\leftarrow$!  !$\textit{Q-Stufige-Turnier-Selektion (q = 3)}$! 
+\end{lstlisting}
+
+
     \subsection{Vergleich der Decodierungsfunktionen}
+    \label{subsec:test-decfunc}
 
     Zur Feststellung der effektivsten Decodierungsfunktion wurde willkürlich eine Probleminstanz ausgewählt (\texttt{u120\_00}) und anschließend mehrfach mit dem Algorithmus bearbeitet. Insgesamt wurden 11 Testläufe je Decodierungsfunktionen durchgeführt. Im Anschluss wurde für jede Funktion der Datensatz ausgewählt, bei dem die Ausführungszeit des Testlaufs dem Median aller 11 Laufzeiten entsprach. 
     \begin{figure}[h]
@@ -163,7 +177,7 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     \subsection{Vergleich der Rekombinationsalgorithmen}
     \label{subsec:recombinations}
 
-    Beim Experiment zur Untersuchung der Rekombinationsverfahren wurde analog zur Untersuchung der Mutationsoperatoren vorgegangen (vgl. \autoref{subsec:mutation-comparison}). Diesmal wurde die Probleminstanz \texttt{u120\_15} bearbeitet und statt des Algorithmus für die Mutation ausschließlich der verwendete Rekombinationsalgorithmus variiert. Das Ergebnis des Vergleichs ist in \autoref{plt:recombinations} dargestellt. In der Abbildung wird deutlich, dass die Ermittlung einer minimalen Lösung unter Verwendung der Ordnungsrekombination wesentlich länger dauerte als mit der Abbildungsrekombination und nur in 73\% der Testläufe überhaupt erfolgreich war.
+    Beim Experiment zur Untersuchung der Rekombinationsverfahren wurde analog zur Untersuchung der Mutationsoperatoren vorgegangen (vgl. \autoref{subsec:mutation-comparison}). Als Eingabe-Datensatz diente die Probleminstanz \texttt{u120\_15}. Das Ergebnis des Vergleichs ist in \autoref{plt:recombinations} dargestellt. In der Abbildung wird deutlich, dass die Ermittlung einer minimalen Lösung unter Verwendung der Ordnungsrekombination wesentlich länger dauerte als mit der Abbildungsrekombination und nur in 73\% der Testläufe überhaupt erfolgreich war.
 
     \begin{figure}[h]
         \center
@@ -175,30 +189,30 @@ Im Verlauf der Untersuchungen von E. Falkenauer mit dem HGGA konnte diese theore
     Während der Untersuchungen wurde noch ein weiterer Rekombinationsoperator entwickelt, der bei jeder Anwendung zufällig entweder eine Abbildungsrekombination oder eine Ordnungsrekombination durchführt. Dieser Ansatz erwies sich im Mittel am effektivsten, wobei der Unterschied zur Abbildungsrekombination nicht signifikant ist.
 
     \subsection{Vergleich der Bewertungsfunktionen}
+    \label{subsec:test-qualfunc}
     Die in \autoref{subsec:qualityfunction} vorgestellten Bewertungsfunktionen $q_1$ und $q_2$ wurden anhand von Probleminstanz \texttt{u120\_13} untersucht. Im Unterschied zu den vorangegangenen Experimenten wurden diesmal jeweils 21 Testläufe pro Bewertungsfunktion durchgeführt. Bis auf die Einstellung der Bewertungsfunktion entsprachen alle Parameter der am Anfang von \autoref{sec:evaluation} vorgestellten Standardkonfiguration. 
     
     Unter Verwendung der Funktion $q_1$ konnte in allen 21 Testläufen eine minimale Lösung ermittelt werden. Der Median der benötigten Generation bis zum Auffinden dieser Lösung lag bei 101 Generationen. Im Gegensatz dazu konnte mithilfe der Bewertungsfunktion $q_2$ in keinem Testlauf eine Behälterbelegung errechnet werden, die dem theoretischen Optimum von 49 Behältern entspricht. Da sich die Population bei der Verwendung von $q_2$ in Richtung des Optimums entwickelte, kann ein grundsätzlicher Implementierungsfehler ausgeschlossen werden. Am Ende eines Testlaufs mit der Funktion $q_2$ lag die Anzahl der benötigten Behälter in der Regel ein Behälter über dem theoretischen Optimum. Es ist daher zu vermuten, dass die Funktion ungeeignet ist, sobald nur noch sehr wenig Platz in allen verwendeten Behältern verfügbar ist.   
 
     \subsection{Laufzeitvergleich mit dem \textit{Hybrid Genetic Grouping Algorithm}}
+    \label{subsec:comparison}
 
-    Zum Abschluss der Untersuchungen trat der entwickelte evolutionäre Bin-Packing-Algorithmus (EBPA) in einem Laufzeitvergleich gegen den \textit{Hybrid Genetic Grouping Algorithm} (HGGA) an. Die für den HGGA erforderlichen Messwerte wurden dem Anhang von \parencite{Falkenauer:1996} entnommen. Aufgrund der Erkenntnisse aus den vorangegangenen Versuchen wurde die Standardkonfiguration des EBPA dahin gehend verändert, dass bei der Rekombination nun zufällig einer der beiden verfügbaren Algorithmen ausgewählt wird (siehe \autoref{subsec:recombinations}). Für den Vergleich wurden insgesamt 40 Probleminstanzen jeweils einmal mit dem EBPA bearbeitet. Es handelte sich dabei um 20 Instanzen der \uniform-Klasse mit 120 Objekten und um 20 Instanzen der \triplets-Klasse mit 60 Objekten. 
+    Zum Abschluss der Untersuchungen trat der entwickelte evolutionäre Bin-Packing-Algorithmus (EBPA) in einem Laufzeitvergleich gegen den \textit{Hybrid Genetic Grouping Algorithm} (HGGA) an. Die für den HGGA erforderlichen Messwerte wurden dem Anhang von \parencite{Falkenauer:1996} entnommen. Aufgrund der Erkenntnisse aus den vorangegangenen Versuchen wurde die Standardkonfiguration des EBPA dahin gehend verändert, dass bei der Rekombination zufällig einer der beiden verfügbaren Algorithmen ausgewählt wird (siehe \autoref{subsec:recombinations}). Für den Vergleich wurden insgesamt 40 Probleminstanzen ausgewählt und jeweils einmal mit dem EBPA bearbeitet. Die Menge der Probleme bestanden aus 20 Instanzen der \uniform-Klasse mit jeweils 120 Objekten und 20 Instanzen der \triplets-Klasse mit jeweils 60 Objekten. 
     
-    \begin{figure}[h]
+    Die Ergebnisse für die Probleminstanzen der \uniform-Klasse sind in \autoref{plt:comparison-u120} dargestellt. Die Laufzeiten geben an, wie lange das Berechnen einer minimale Lösung in Anspruch nahm. Gelang dies einem oder beiden Algorithmen bei einer Probleminstanz nicht, wurde das Ergebnis nicht in das Diagramm übernommen. Bezüglich der bearbeiteten Probleme der \uniform-Klasse fand der HGGA bei 18 von 20 Instanzen eine minimale Lösung und der EBPA bei 14 von 20. Neben der höheren Zuverlässigkeit hinsichtlich des Auffindens einer optimalen Lösung war der HGGA auch in Bezug auf die Laufzeit bei allen Vergleichen deutlich überlegen. Eine sinnvolle Gegenüberstellung für die Probleme der \triplets-Klasse war nicht möglich, da der EBPA bei keiner der Instanzen eine minimale Lösung ermitteln konnte. Dem HGGA gelang dies dagegen bei 18 von 20 Problemen. Bei sämtlichen Tests mit dem EBPA, die nicht zu einer minimalen Lösung führten, benötigte die beste ermittelte Lösung einen Behälter mehr als das theoretische Optimum. Die Ausführung des Testlaufs wurde bei diesem Experiment automatisch nach jeweils 5000 berechneten Generationen abgebrochen. 
+    
+    \begin{figure}[H]
         \center
         \input{figures/test-comparison-u120}
         \caption{Laufzeitvergleich anhand von Probleminstanzen der \uniform-Klasse} 
         \label{plt:comparison-u120}
     \end{figure}
 
-    Die ermittelten Ergebnisse sind getrennt nach Problemklasse in den Abbildungen \ref{plt:comparison-u120} und \ref{plt:comparison-t60} dargestellt. Die Laufzeiten geben an, wie lange das Berechnen einer minimale Lösung in Anspruch nahm. Gelang dies einem oder beiden Algorithmen bei einer Probleminstanz nicht, wurde das Ergebnis für diese Instanz nicht in das Diagramm übernommen. Bezüglich der bearbeiteten Probleme der \uniform-Klasse fand der HGGA bei 18 von 20 Instanzen eine minimale Lösung und der EBPA bei 14 von 20. Neben der höheren Zuverlässigkeit hinsichtlich des Auffindens einer optimalen Lösung war der HGGA bei dieser Klasse von Problemen auch in Bezug auf die Laufzeit deutlich überlegen. In den Tests mit den Problemen der \triplets-Klasse berechnete der HGGA dagegen lediglich einmal eine Lösung schneller als der EBPA. Allerdings konnte der EBPA nur bei 10 von 20 Instanzen eine minimale Lösung finden, wogegen der HGGA bei 18 von 20 Instanzen die Berechnung mit einer optimalen Lösung beendete.     
-    
-    \begin{figure}[h]
-        \center
-        \input{figures/test-comparison-t60}
-        \caption{Laufzeitvergleich anhand von Probleminstanzen der \triplets-Klasse} 
-        \label{plt:comparison-t60}
-    \end{figure}
+    \subsection{Fazit}
+    Die Untersuchungen haben gezeigt, dass die Effektivität des entwickelten Algorithmus von einer ganzen Reihe von Faktoren beeinflusst wird. 
+In Bezug auf die untersuchten Decodierungsfunktionen ist der Einsatz der \bestfit-Heuristik unerlässlich, um möglichst schnell eine möglichst minimale Lösung zu ermitteln. Die Verwendung des Mutationsoperators ist dagegen nicht zwingend erforderlich, um eine Lösung mit der theoretisch minimalen Anzahl an Behältern zu bestimmen. Teilweise wird durch das Weglassen der Mutation die Suche sogar beschleunigt. Dennoch ist die Verwendung eines Mutationsalgorithmus sinnvoll, da dadurch wirksam eine frühzeitige Konvergenz der Population verhindert werden kann. Wurde der Mutationsoperator eingesetzt, war die Verschiebende-Mutation im Vergleich am effektivsten. Eine Steigerung der Leistungsfähigkeit durch mehrere, hintereinander ausgeführte Mutationen konnte nicht beobachtet werden. Als wirksamster Rekombinationsalgorithmus erwies sich die Abbildungsrekombination. Durch die zufällige Verwendung von Ordnungsrekombination und Abbildungsrekombination konnten ebenfalls gute Ergebnisse erzielt werden. Bei den vorgestellten Bewertungsfunktionen $q_1$ und $q_2$ erwies sich die Funktion $q_2$ als weniger geeignet, um eine optimale Lösung zu ermitteln.
 
+Das in \autoref{subsec:comparison} beschriebene Experiment verdeutlicht, dass der entwickelte Algorithmus nicht jedes Problem gleich gut löst. Besonders die untersuchten Instanzen der \triplets-Klasse bereiteten dem EBPA Probleme. Im direkten Vergleich mit dem \textit{Hybrid Genetic Grouping Algorithm} war der EBPA deutlich unterlegen. Die Ursache dafür ist in der unterschiedlichen Codierung des Problems durch den jeweiligen Algorithmus zu suchen. Der EBPA verwendet eine objektbasierte Codierung, während der HGGA die Gruppierung mehrerer Objekte codiert. Die objektbasierte Codierung hat den Nachteil, dass verschiedene Permutationen von Objekten die gleiche Zuordnung der Objekte zu den Behältern repräsentieren. Dadurch ist der Suchraum des Algorithmus weitaus größer, als es für die Problemstellung eigentlich notwendig ist.
 
     \clearpage
     \pagestyle{empty}
