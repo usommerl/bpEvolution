@@ -39,4 +39,4 @@ Usage
 
 Note
 ----
-This project was part of a university course and is no longer actively maintained. A paper which evaluates the algorithm can be found [here](doc/documentation.pdf).
+This project was part of a university course and is no longer actively maintained. You can download the paper which evaluates the algorithm [here](doc/documentation.pdf).
